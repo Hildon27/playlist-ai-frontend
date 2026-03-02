@@ -1,4 +1,4 @@
-export type Privacity = 'public' | 'private';
+export type Privacity = 'public' | 'private' | 'PUBLIC' | 'PRIVATE';
 
 export interface RegisterRequest {
   firstName: string;

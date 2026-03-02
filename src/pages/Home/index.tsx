@@ -1,7 +1,9 @@
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import './styles.css';
 
 export function Home() {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
 
   return (
@@ -20,6 +22,23 @@ export function Home() {
         <div className="welcome-card">
           <h2>Bem-vindo ao Playlist AI!</h2>
           <p>Crie playlists inteligentes usando inteligência artificial.</p>
+          
+          <div className="action-buttons">
+            <button 
+              onClick={() => navigate('/create-playlist')} 
+              className="create-playlist-button"
+            >
+              ✨ Criar Nova Playlist
+            </button>
+            
+            <button 
+              onClick={() => navigate('/my-playlists')} 
+              className="my-playlists-button"
+            >
+              📋 Minhas Playlists
+            </button>
+          </div>
+
           <div className="user-details">
             <p><strong>Nome:</strong> {user?.firstName} {user?.lastName}</p>
             <p><strong>Email:</strong> {user?.email}</p>

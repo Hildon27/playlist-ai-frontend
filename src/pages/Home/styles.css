@@ -69,7 +69,51 @@
 
 .welcome-card > p {
   color: rgba(255, 255, 255, 0.7);
-  margin: 0 0 32px 0;
+  margin: 0 0 24px 0;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.create-playlist-button {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.create-playlist-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+}
+
+.my-playlists-button {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(29, 185, 84, 0.5);
+  background: transparent;
+  color: #1db954;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.my-playlists-button:hover {
+  background: rgba(29, 185, 84, 0.1);
+  border-color: #1db954;
+  transform: translateY(-2px);
 }
 
 .user-details {

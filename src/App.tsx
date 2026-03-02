@@ -3,6 +3,9 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Home } from './pages/Home';
+import { PlaylistGenerator } from './pages/PlaylistGenerator';
+import { MyPlaylists } from './pages/MyPlaylists';
+import { PlaylistDetail } from './pages/PlaylistDetail';
 import type { ReactNode } from 'react';
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -79,6 +82,30 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Home />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/create-playlist" 
+        element={
+          <ProtectedRoute>
+            <PlaylistGenerator />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/my-playlists" 
+        element={
+          <ProtectedRoute>
+            <MyPlaylists />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/playlists/:id" 
+        element={
+          <ProtectedRoute>
+            <PlaylistDetail />
           </ProtectedRoute>
         } 
       />
