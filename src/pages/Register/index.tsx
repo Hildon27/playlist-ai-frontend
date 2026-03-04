@@ -1,33 +1,33 @@
-import { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import type { Privacity } from '../../types/auth';
-import '../../styles/auth.css';
+import { useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import type { Privacity } from "../../types/auth";
+import "../../styles/auth.css";
 
 export function Register() {
   const navigate = useNavigate();
   const { register } = useAuth();
-  
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [privacity, setPrivacity] = useState<Privacity>('public');
-  const [error, setError] = useState('');
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [privacity, setPrivacity] = useState<Privacity>("public");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (password !== confirmPassword) {
-      setError('As senhas não coincidem.');
+      setError("As senhas não coincidem.");
       return;
     }
 
     if (password.length < 6) {
-      setError('A senha deve ter pelo menos 6 caracteres.');
+      setError("A senha deve ter pelo menos 6 caracteres.");
       return;
     }
 
@@ -41,14 +41,16 @@ export function Register() {
         password,
         privacity,
       });
-      navigate('/login', { 
-        state: { message: 'Conta criada com sucesso! Faça login para continuar.' }
+      navigate("/login", {
+        state: {
+          message: "Conta criada com sucesso! Faça login para continuar.",
+        },
       });
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('Erro ao criar conta. Tente novamente.');
+        setError("Erro ao criar conta. Tente novamente.");
       }
     } finally {
       setIsLoading(false);
@@ -65,33 +67,31 @@ export function Register() {
 
         <form onSubmit={handleSubmit} className="auth-form">
           {error && <div className="auth-error">{error}</div>}
-          
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="firstName">Nome</label>
-              <input
-                id="firstName"
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="João"
-                required
-                disabled={isLoading}
-              />
-            </div>
 
-            <div className="form-group">
-              <label htmlFor="lastName">Sobrenome</label>
-              <input
-                id="lastName"
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder="Silva"
-                required
-                disabled={isLoading}
-              />
-            </div>
+          <div className="form-group">
+            <label htmlFor="firstName">Nome</label>
+            <input
+              id="firstName"
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="João"
+              required
+              disabled={isLoading}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="lastName">Sobrenome</label>
+            <input
+              id="lastName"
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Silva"
+              required
+              disabled={isLoading}
+            />
           </div>
 
           <div className="form-group">
@@ -148,14 +148,13 @@ export function Register() {
           </div>
 
           <button type="submit" className="auth-button" disabled={isLoading}>
-            {isLoading ? 'Criando conta...' : 'Criar Conta'}
+            {isLoading ? "Criando conta..." : "Criar Conta"}
           </button>
         </form>
 
         <div className="auth-footer">
           <p>
-            Já tem uma conta?{' '}
-            <Link to="/login">Faça login</Link>
+            Já tem uma conta? <Link to="/login">Faça login</Link>
           </p>
         </div>
       </div>

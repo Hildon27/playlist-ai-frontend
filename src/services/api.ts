@@ -3,10 +3,9 @@ import type { LoginRequest, LoginResponse, RegisterRequest, User } from '../type
 import type { 
   SpotifyTrack, 
   GeneratePlaylistRequest, 
-  GeneratedPlaylistResponse,
-  SearchTracksResponse
+  GeneratePlaylistResponse 
 } from '../types/spotify';
-import type { Playlist, PlaylistWithMusics, PlaylistsResponse } from '../types/playlist';
+import type { PlaylistsResponse, PlaylistWithMusics } from '../types/playlist';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -57,39 +56,73 @@ export const authService = {
 
 export const spotifyService = {
   async searchTracks(query: string, limit: number = 10): Promise<SpotifyTrack[]> {
-    const response = await api.get<SearchTracksResponse>('/api/spotify/search', {
+    const response = await api.get('/api/spotify/search', {
       params: { query, limit },
     });
-    // API retorna { success, data, count }
-    return response.data.data || [];
+    const data = response.data;
+    let raw: any[] = [];
+    if (Array.isArray(data)) {
+      raw = data;
+    } else if (data?.data && Array.isArray(data.data)) {
+      raw = data.data;
+    } else if (data?.tracks && Array.isArray(data.tracks)) {
+      raw = data.tracks;
+    } else if (data?.items && Array.isArray(data.items)) {
+      raw = data.items;
+    }
+    // Map API fields to SpotifyTrack interface
+    return raw.map((item: any) => ({
+      id: item.id || item.spotifyId,
+      name: item.name,
+      artist: item.artist || (Array.isArray(item.artists) ? item.artists.join(', ') : item.artists),
+      album: item.album,
+      albumCover: item.albumCover,
+      duration: item.duration,
+      previewUrl: item.previewUrl || item.spotifyUrl,
+    }));
   },
 
-  async getTrackById(trackId: string): Promise<SpotifyTrack | null> {
-    const response = await api.get(`/api/spotify/tracks/${trackId}`);
-    return response.data.data || null;
+  async getTrackById(trackId: string): Promise<SpotifyTrack> {
+    const response = await api.get<SpotifyTrack>(`/api/spotify/tracks/${trackId}`);
+    return response.data;
   },
 };
 
 export const aiService = {
-  async generatePlaylist(data: GeneratePlaylistRequest): Promise<GeneratedPlaylistResponse> {
-    const response = await api.post<GeneratedPlaylistResponse>('/api/ai/generate-playlist', data);
-    return response.data;
+  async generatePlaylist(data: GeneratePlaylistRequest): Promise<GeneratePlaylistResponse> {
+    const response = await api.post('/api/ai/generate-playlist', data);
+    const resData = response.data;
+
+    // API returns { data: { generatedTracks: [...] } }
+    if (resData?.data?.generatedTracks) {
+      return { tracks: resData.data.generatedTracks };
+    }
+    if (resData?.generatedTracks) {
+      return { tracks: resData.generatedTracks };
+    }
+    if (Array.isArray(resData)) {
+      return { tracks: resData };
+    }
+    if (resData?.tracks) {
+      return resData;
+    }
+    return { tracks: [] };
   },
 };
 
 export const playlistService = {
   async getMyPlaylists(page: number = 1, size: number = 10): Promise<PlaylistsResponse> {
-    const response = await api.get<PlaylistsResponse>('/api/playlists/user', {
+    const response = await api.get<PlaylistsResponse>('/api/playlists/my', {
       params: { page, size },
     });
     return response.data;
   },
 
-  async getPlaylistById(id: string, includeMusics: boolean = false): Promise<Playlist | PlaylistWithMusics> {
-    const response = await api.get(`/api/playlists/${id}`, {
+  async getPlaylistById(id: string, includeMusics: boolean = false): Promise<PlaylistWithMusics> {
+    const response = await api.get<PlaylistWithMusics>(`/api/playlists/${id}`, {
       params: { includeMusics },
     });
-    return response.data.data;
+    return response.data;
   },
 
   async deletePlaylist(id: string): Promise<void> {

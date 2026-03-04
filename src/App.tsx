@@ -4,8 +4,8 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Home } from './pages/Home';
 import { PlaylistGenerator } from './pages/PlaylistGenerator';
-import { MyPlaylists } from './pages/MyPlaylists';
 import { PlaylistDetail } from './pages/PlaylistDetail';
+import { MyPlaylists } from './pages/MyPlaylists';
 import type { ReactNode } from 'react';
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -94,18 +94,18 @@ function AppRoutes() {
         } 
       />
       <Route 
-        path="/my-playlists" 
-        element={
-          <ProtectedRoute>
-            <MyPlaylists />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
         path="/playlists/:id" 
         element={
           <ProtectedRoute>
             <PlaylistDetail />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/my-playlists" 
+        element={
+          <ProtectedRoute>
+            <MyPlaylists />
           </ProtectedRoute>
         } 
       />

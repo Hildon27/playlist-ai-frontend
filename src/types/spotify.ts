@@ -1,20 +1,15 @@
-// TrackDTO do backend
 export interface SpotifyTrack {
-  spotifyId: string;
+  id: string;
   name: string;
-  artists: string[];
+  artist: string;
   album: string;
-  albumCover: string | null;
-  duration: number;
-  previewUrl: string | null;
-  spotifyUrl: string;
+  albumCover?: string;
+  duration?: number;
+  previewUrl?: string;
 }
 
-// Resposta da busca do Spotify
 export interface SearchTracksResponse {
-  success: boolean;
-  data: SpotifyTrack[];
-  count: number;
+  tracks: SpotifyTrack[];
 }
 
 export interface SeedTrack {
@@ -30,28 +25,14 @@ export interface GeneratePlaylistRequest {
   privacity?: 'public' | 'private';
 }
 
-// Resposta da geração de playlist
-export interface GeneratedPlaylistResponse {
-  success: boolean;
-  data: {
-    playlist: {
-      id: string;
-      name: string;
-      privacity: string;
-      aiMessage: string;
-    };
-    tracksAdded: number;
-    tracksFailed: number;
-    aiGeneration: {
-      message: string;
-      seedTracks: SeedTrack[];
-      generatedTracks: SpotifyTrack[];
-      invalidSuggestions: { name: string; artist: string }[];
-      stats: {
-        requested: number;
-        found: number;
-        notFound: number;
-      };
-    };
-  };
+export interface GeneratedTrack {
+  id: string;
+  name: string;
+  artist: string;
+  album: string;
+  albumCover?: string;
+}
+
+export interface GeneratePlaylistResponse {
+  tracks: GeneratedTrack[];
 }
