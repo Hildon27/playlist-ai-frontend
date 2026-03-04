@@ -142,7 +142,7 @@ export function PlaylistGenerator() {
         <button onClick={() => navigate('/')} className="back-button">
           ← Voltar
         </button>
-        <h1>🎵 Criar Playlist com IA</h1>
+        <h1>Criar Playlist com IA</h1>
       </header>
 
       <main className="generator-main">
@@ -268,7 +268,7 @@ export function PlaylistGenerator() {
           /* Generated Playlist Section */
           <section className="generated-section">
             <div className="generated-header">
-              <h2>🎉 Sua Playlist Gerada!</h2>
+              <h2>Sua Playlist Gerada!</h2>
               <p>Baseada nas músicas que você selecionou, aqui estão as recomendações:</p>
             </div>
 

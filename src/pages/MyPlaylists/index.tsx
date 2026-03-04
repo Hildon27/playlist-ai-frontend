@@ -19,7 +19,7 @@ export function MyPlaylists() {
         setError(null);
         const response = await playlistService.getMyPlaylists(page, 10);
         setPlaylists(response.data || []);
-        setTotalPages(response.pagination?.totalPages || 1);
+        setTotalPages(response.meta?.totalPages || 1);
       } catch (err) {
         console.error('Erro ao carregar playlists:', err);
         setError('Não foi possível carregar suas playlists.');

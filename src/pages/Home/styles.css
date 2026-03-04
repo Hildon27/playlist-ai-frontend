@@ -118,6 +118,34 @@
 }
 
 /* Card de playlist existente */
+
+/* Cover mosaic 2x2 (Spotify style) */
+.cover-mosaic {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
+}
+
+.cover-mosaic.placeholder-mosaic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+.cover-tile {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .card-header {
   display: flex;
   justify-content: space-between;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { playlistService } from '../../services/api';
+import { playlistService, spotifyService } from '../../services/api';
 import type { Playlist } from '../../types/playlist';
 import './styles.css';
 
@@ -10,12 +10,44 @@ export function Home() {
   const { user, logout } = useAuth();
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [loading, setLoading] = useState(true);
+  const [covers, setCovers] = useState<Record<string, string[]>>({});
 
   useEffect(() => {
     async function loadPlaylists() {
       try {
         const response = await playlistService.getMyPlaylists(1, 20);
-        setPlaylists(response.data || []);
+        const playlistsData = response.data || [];
+        setPlaylists(playlistsData);
+
+        // 1. Fetch musics for each playlist
+        const playlistMusics: Record<string, string[]> = {};
+        await Promise.all(
+          playlistsData.map(async (playlist) => {
+            try {
+              const detail = await playlistService.getPlaylistById(playlist.id, true);
+              playlistMusics[playlist.id] = (detail.musics || [])
+                .slice(0, 4)
+                .map((m) => m.externalId);
+            } catch {
+              playlistMusics[playlist.id] = [];
+            }
+          })
+        );
+
+        // 2. Collect all unique track IDs and batch fetch in ONE call
+        const allIds = [...new Set(Object.values(playlistMusics).flat())];
+        const tracks = await spotifyService.getTracksByIds(allIds);
+        const trackMap = new Map(tracks.map((t) => [t.id, t.albumCover]));
+
+        // 3. Map covers back to each playlist
+        const coversMap: Record<string, string[]> = {};
+        for (const [playlistId, musicIds] of Object.entries(playlistMusics)) {
+          coversMap[playlistId] = musicIds
+            .map((id) => trackMap.get(id))
+            .filter((cover): cover is string => !!cover)
+            .slice(0, 4);
+        }
+        setCovers(coversMap);
       } catch (err) {
         console.error('Erro ao carregar playlists:', err);
       } finally {
@@ -32,6 +64,31 @@ export function Home() {
       month: '2-digit',
       year: 'numeric',
     });
+  }
+
+  function renderCovers(playlistId: string) {
+    const playlistCovers = covers[playlistId];
+    if (!playlistCovers || playlistCovers.length === 0) {
+      return (
+        <div className="cover-mosaic placeholder-mosaic">
+          <span>🎵</span>
+        </div>
+      );
+    }
+
+    // Fill to 4 slots: repeat covers if less than 4
+    const slots = [...playlistCovers];
+    while (slots.length < 4) {
+      slots.push(playlistCovers[slots.length % playlistCovers.length]);
+    }
+
+    return (
+      <div className="cover-mosaic">
+        {slots.map((cover, i) => (
+          <img key={i} src={cover} alt="" className="cover-tile" />
+        ))}
+      </div>
+    );
   }
 
   return (
@@ -73,6 +130,7 @@ export function Home() {
                 className="playlist-card"
                 onClick={() => navigate(`/playlists/${playlist.id}`)}
               >
+                {renderCovers(playlist.id)}
                 <div className="card-header">
                   <h3>{playlist.name}</h3>
                   <span className={`privacity-badge ${playlist.privacity.toLowerCase()}`}>

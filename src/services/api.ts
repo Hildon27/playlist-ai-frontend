@@ -83,8 +83,37 @@ export const spotifyService = {
   },
 
   async getTrackById(trackId: string): Promise<SpotifyTrack> {
-    const response = await api.get<SpotifyTrack>(`/api/spotify/tracks/${trackId}`);
-    return response.data;
+    const response = await api.get(`/api/spotify/tracks/${trackId}`);
+    // API may wrap in { success, data: track }
+    const item = response.data?.data || response.data;
+    return {
+      id: item.id || item.spotifyId,
+      name: item.name,
+      artist: item.artist || (Array.isArray(item.artists) ? item.artists.join(', ') : item.artists),
+      album: item.album,
+      albumCover: item.albumCover,
+      duration: item.duration,
+      previewUrl: item.previewUrl || item.spotifyUrl,
+    };
+  },
+
+  async getTracksByIds(trackIds: string[]): Promise<SpotifyTrack[]> {
+    if (trackIds.length === 0) return [];
+    try {
+      const response = await api.post('/api/spotify/validate', { trackIds });
+      const valid = response.data?.data?.valid || [];
+      return valid.map((item: any) => ({
+        id: item.id || item.spotifyId,
+        name: item.name,
+        artist: item.artist || (Array.isArray(item.artists) ? item.artists.join(', ') : item.artists),
+        album: item.album,
+        albumCover: item.albumCover,
+        duration: item.duration,
+        previewUrl: item.previewUrl || item.spotifyUrl,
+      }));
+    } catch {
+      return [];
+    }
   },
 };
 
@@ -112,17 +141,23 @@ export const aiService = {
 
 export const playlistService = {
   async getMyPlaylists(page: number = 1, size: number = 10): Promise<PlaylistsResponse> {
-    const response = await api.get<PlaylistsResponse>('/api/playlists/my', {
+    const response = await api.get('/api/playlists/user', {
       params: { page, size },
     });
-    return response.data;
+    const resData = response.data;
+    return {
+      success: resData.success,
+      data: resData.data || [],
+      meta: resData.meta || { page, size, total: 0, totalPages: 1 },
+    };
   },
 
   async getPlaylistById(id: string, includeMusics: boolean = false): Promise<PlaylistWithMusics> {
-    const response = await api.get<PlaylistWithMusics>(`/api/playlists/${id}`, {
+    const response = await api.get(`/api/playlists/${id}`, {
       params: { includeMusics },
     });
-    return response.data;
+    // API wraps in { success, data: playlist }
+    return response.data?.data || response.data;
   },
 
   async deletePlaylist(id: string): Promise<void> {
