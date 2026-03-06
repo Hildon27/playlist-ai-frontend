@@ -37,6 +37,13 @@ api.interceptors.response.use(
   }
 );
 
+export interface UpdateUserRequest {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  privacity?: 'public' | 'private';
+}
+
 export const authService = {
   async register(data: RegisterRequest): Promise<User> {
     const response = await api.post<User>('/auth/register', data);
@@ -49,8 +56,24 @@ export const authService = {
   },
 
   async getMe(): Promise<User> {
-    const response = await api.get<User>('/api/users/me');
-    return response.data;
+    const response = await api.get<{ success: boolean; data: User }>('/api/users/me');
+    return response.data.data;
+  },
+};
+
+export const userService = {
+  async getProfile(): Promise<User> {
+    const response = await api.get<{ success: boolean; data: User }>('/api/users/me');
+    return response.data.data;
+  },
+
+  async updateProfile(data: UpdateUserRequest): Promise<User> {
+    const response = await api.put<{ success: boolean; data: User }>('/api/users/me', data);
+    return response.data.data;
+  },
+
+  async deleteAccount(): Promise<void> {
+    await api.delete('/api/users/me');
   },
 };
 

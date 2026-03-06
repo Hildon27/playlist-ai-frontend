@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import type { AuthContextType, LoginRequest, RegisterRequest, User } from '../types/auth';
-import { authService } from '../services/api';
+import type { AuthContextType, LoginRequest, RegisterRequest, UpdateUserRequest, User } from '../types/auth';
+import { authService, userService } from '../services/api';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -52,6 +52,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(null);
   };
 
+  const updateUser = async (data: UpdateUserRequest) => {
+    const updatedUser = await userService.updateProfile(data);
+    setUser(updatedUser);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -62,6 +67,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         login,
         register,
         logout,
+        updateUser,
       }}
     >
       {children}

@@ -29,6 +29,27 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
+.user-name {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.profile-link {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  background: rgba(99, 102, 241, 0.1);
+  color: #a5b4fc;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.profile-link:hover {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.6);
+}
+
 .logout-button {
   padding: 8px 16px;
   border-radius: 8px;
@@ -49,17 +70,76 @@
   padding: 40px;
 }
 
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
 .section-title {
   color: #fff;
   font-size: 1.5rem;
-  margin: 0 0 24px 0;
+  margin: 0;
 }
 
-/* Grid de Cards */
-.playlists-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+/* Controles do carrossel */
+.carousel-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.carousel-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.carousel-btn svg {
+  color: #fff;
+  fill: #fff;
+}
+
+.carousel-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.carousel-btn:active {
+  transform: scale(0.95);
+}
+
+/* Container do carrossel */
+.carousel-container {
+  position: relative;
+  margin: 0 -40px;
+  padding: 0 40px;
+}
+
+/* Carrossel horizontal */
+.playlists-carousel {
+  display: flex;
   gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 8px 0 16px 0;
+}
+
+.playlists-carousel::-webkit-scrollbar {
+  display: none;
 }
 
 /* Card base */
@@ -67,14 +147,18 @@
   background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(10px);
   border-radius: 16px;
-  padding: 24px;
+  padding: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   transition: all 0.25s ease;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 160px;
+  min-width: 220px;
+  max-width: 220px;
+  min-height: 280px;
+  scroll-snap-align: start;
+  flex-shrink: 0;
 }
 
 .playlist-card:hover {
@@ -168,6 +252,9 @@
 .privacity-badge {
   font-size: 1rem;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .card-description {
@@ -195,7 +282,20 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  justify-content: center;
+}
+
+.skeleton-cover {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.06) 25%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.06) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
 }
 
 .skeleton-line {
@@ -239,7 +339,26 @@
     padding: 20px;
   }
 
-  .playlists-grid {
-    grid-template-columns: 1fr;
+  .carousel-container {
+    margin: 0 -20px;
+    padding: 0 20px;
+  }
+
+  .playlist-card {
+    min-width: 180px;
+    max-width: 180px;
+    min-height: 240px;
+    padding: 16px;
+  }
+
+  .section-header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .carousel-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1.25rem;
   }
 }

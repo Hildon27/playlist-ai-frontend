@@ -14,6 +14,7 @@ export interface Playlist {
 export interface PlaylistMusic {
   id: string;
   externalId: string;
+  albumCover?: string | null;
   createdAt: string;
 }
 

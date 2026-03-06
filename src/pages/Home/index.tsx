@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { IoGlobe, IoLockClosed } from 'react-icons/io5';
 import { useAuth } from '../../contexts/AuthContext';
 import { playlistService } from '../../services/api';
 import type { Playlist } from '../../types/playlist';
@@ -72,9 +73,12 @@ export function Home() {
   return (
     <div className="home-container">
       <header className="home-header">
-        <h1>🎵 Playlist AI</h1>
+        <h1>Playlist AI</h1>
         <div className="user-info">
-          <span>Olá, {user?.firstName}!</span>
+          <span className="user-name">Olá, {user?.firstName}</span>
+          <Link to="/profile" className="profile-link">
+            Meu Perfil
+          </Link>
           <button onClick={logout} className="logout-button">
             Sair
           </button>
@@ -138,7 +142,7 @@ export function Home() {
                   <div className="card-header">
                     <h3>{playlist.name}</h3>
                     <span className={`privacity-badge ${playlist.privacity.toLowerCase()}`}>
-                      {playlist.privacity === 'PUBLIC' ? '🌐' : '🔒'}
+                      {playlist.privacity.toUpperCase() === 'PUBLIC' ? <IoGlobe size={16} /> : <IoLockClosed size={16} />}
                     </span>
                   </div>
                   {playlist.aiMessage && (

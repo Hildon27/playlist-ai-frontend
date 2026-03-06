@@ -27,6 +27,13 @@ export interface User {
   updatedAt: string;
 }
 
+export interface UpdateUserRequest {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  privacity?: 'public' | 'private';
+}
+
 export interface AuthContextType {
   user: User | null;
   token: string | null;
@@ -35,4 +42,5 @@ export interface AuthContextType {
   login: (credentials: LoginRequest) => Promise<void>;
   register: (data: RegisterRequest) => Promise<void>;
   logout: () => void;
+  updateUser: (data: UpdateUserRequest) => Promise<void>;
 }

@@ -5,7 +5,7 @@ import { Register } from './pages/Register';
 import { Home } from './pages/Home';
 import { PlaylistGenerator } from './pages/PlaylistGenerator';
 import { PlaylistDetail } from './pages/PlaylistDetail';
-import { MyPlaylists } from './pages/MyPlaylists';
+import { Profile } from './pages/Profile';
 import type { ReactNode } from 'react';
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -102,10 +102,10 @@ function AppRoutes() {
         } 
       />
       <Route 
-        path="/my-playlists" 
+        path="/profile" 
         element={
           <ProtectedRoute>
-            <MyPlaylists />
+            <Profile />
           </ProtectedRoute>
         } 
       />
