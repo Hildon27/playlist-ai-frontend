@@ -8,6 +8,7 @@ export interface Playlist {
   userId: string;
   createdAt: string;
   updatedAt: string;
+  coverImages?: string[];
 }
 
 export interface PlaylistMusic {

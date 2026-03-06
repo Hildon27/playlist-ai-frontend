@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { playlistService, spotifyService } from '../../services/api';
+import { playlistService } from '../../services/api';
 import type { Playlist } from '../../types/playlist';
 import './styles.css';
 
@@ -10,44 +10,13 @@ export function Home() {
   const { user, logout } = useAuth();
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [loading, setLoading] = useState(true);
-  const [covers, setCovers] = useState<Record<string, string[]>>({});
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function loadPlaylists() {
       try {
         const response = await playlistService.getMyPlaylists(1, 20);
-        const playlistsData = response.data || [];
-        setPlaylists(playlistsData);
-
-        // 1. Fetch musics for each playlist
-        const playlistMusics: Record<string, string[]> = {};
-        await Promise.all(
-          playlistsData.map(async (playlist) => {
-            try {
-              const detail = await playlistService.getPlaylistById(playlist.id, true);
-              playlistMusics[playlist.id] = (detail.musics || [])
-                .slice(0, 4)
-                .map((m) => m.externalId);
-            } catch {
-              playlistMusics[playlist.id] = [];
-            }
-          })
-        );
-
-        // 2. Collect all unique track IDs and batch fetch in ONE call
-        const allIds = [...new Set(Object.values(playlistMusics).flat())];
-        const tracks = await spotifyService.getTracksByIds(allIds);
-        const trackMap = new Map(tracks.map((t) => [t.id, t.albumCover]));
-
-        // 3. Map covers back to each playlist
-        const coversMap: Record<string, string[]> = {};
-        for (const [playlistId, musicIds] of Object.entries(playlistMusics)) {
-          coversMap[playlistId] = musicIds
-            .map((id) => trackMap.get(id))
-            .filter((cover): cover is string => !!cover)
-            .slice(0, 4);
-        }
-        setCovers(coversMap);
+        setPlaylists(response.data || []);
       } catch (err) {
         console.error('Erro ao carregar playlists:', err);
       } finally {
@@ -58,6 +27,15 @@ export function Home() {
     loadPlaylists();
   }, []);
 
+  function scrollCarousel(direction: 'left' | 'right') {
+    if (!carouselRef.current) return;
+    const scrollAmount = 300;
+    carouselRef.current.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth',
+    });
+  }
+
   function formatDate(dateString: string) {
     return new Date(dateString).toLocaleDateString('pt-BR', {
       day: '2-digit',
@@ -66,8 +44,8 @@ export function Home() {
     });
   }
 
-  function renderCovers(playlistId: string) {
-    const playlistCovers = covers[playlistId];
+  function renderCovers(playlist: Playlist) {
+    const playlistCovers = playlist.coverImages;
     if (!playlistCovers || playlistCovers.length === 0) {
       return (
         <div className="cover-mosaic placeholder-mosaic">
@@ -104,46 +82,73 @@ export function Home() {
       </header>
 
       <main className="home-main">
-        <h2 className="section-title">Minhas Playlists</h2>
-
-        <div className="playlists-grid">
-          {/* Card para criar nova playlist */}
-          <div
-            className="playlist-card create-card"
-            onClick={() => navigate('/create-playlist')}
-          >
-            <div className="create-icon">＋</div>
-            <h3>Criar Nova Playlist</h3>
-            <p>Use IA para gerar playlists inteligentes</p>
+        <div className="section-header">
+          <h2 className="section-title">Minhas Playlists</h2>
+          <div className="carousel-controls">
+            <button 
+              className="carousel-btn" 
+              onClick={() => scrollCarousel('left')}
+              aria-label="Anterior"
+            >
+              ‹
+            </button>
+            <button 
+              className="carousel-btn" 
+              onClick={() => scrollCarousel('right')}
+              aria-label="Próximo"
+            >
+              ›
+            </button>
           </div>
+        </div>
 
-          {loading ? (
-            <div className="playlist-card skeleton-card">
-              <div className="skeleton-line wide" />
-              <div className="skeleton-line medium" />
-              <div className="skeleton-line short" />
+        <div className="carousel-container">
+          <div className="playlists-carousel" ref={carouselRef}>
+            {/* Card para criar nova playlist */}
+            <div
+              className="playlist-card create-card"
+              onClick={() => navigate('/create-playlist')}
+            >
+              <div className="create-icon">＋</div>
+              <h3>Criar Nova Playlist</h3>
+              <p>Use IA para gerar playlists inteligentes</p>
             </div>
-          ) : (
-            playlists.map((playlist) => (
-              <div
-                key={playlist.id}
-                className="playlist-card"
-                onClick={() => navigate(`/playlists/${playlist.id}`)}
-              >
-                {renderCovers(playlist.id)}
-                <div className="card-header">
-                  <h3>{playlist.name}</h3>
-                  <span className={`privacity-badge ${playlist.privacity.toLowerCase()}`}>
-                    {playlist.privacity === 'PUBLIC' ? '🌐' : '🔒'}
-                  </span>
+
+            {loading ? (
+              <>
+                <div className="playlist-card skeleton-card">
+                  <div className="skeleton-cover" />
+                  <div className="skeleton-line wide" />
+                  <div className="skeleton-line medium" />
                 </div>
-                {playlist.aiMessage && (
-                  <p className="card-description">{playlist.aiMessage}</p>
-                )}
-                <span className="card-date">{formatDate(playlist.createdAt)}</span>
-              </div>
-            ))
-          )}
+                <div className="playlist-card skeleton-card">
+                  <div className="skeleton-cover" />
+                  <div className="skeleton-line wide" />
+                  <div className="skeleton-line medium" />
+                </div>
+              </>
+            ) : (
+              playlists.map((playlist) => (
+                <div
+                  key={playlist.id}
+                  className="playlist-card"
+                  onClick={() => navigate(`/playlists/${playlist.id}`)}
+                >
+                  {renderCovers(playlist)}
+                  <div className="card-header">
+                    <h3>{playlist.name}</h3>
+                    <span className={`privacity-badge ${playlist.privacity.toLowerCase()}`}>
+                      {playlist.privacity === 'PUBLIC' ? '🌐' : '🔒'}
+                    </span>
+                  </div>
+                  {playlist.aiMessage && (
+                    <p className="card-description">{playlist.aiMessage}</p>
+                  )}
+                  <span className="card-date">{formatDate(playlist.createdAt)}</span>
+                </div>
+              ))
+            )}
+          </div>
         </div>
 
         {!loading && playlists.length === 0 && (
