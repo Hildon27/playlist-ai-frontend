@@ -228,12 +228,24 @@ export function PlaylistGenerator() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Digite o nome da música ou artista..."
                 />
-                {isSearching && <span className="searching-indicator">Buscando...</span>}
               </div>
 
               {error && <div className="error-message">{error}</div>}
 
-              {searchResults.length > 0 && (
+              {isSearching ? (
+                <div className="search-results-skeleton">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="search-result-skeleton">
+                      <div className="skeleton-cover skeleton-pulse"></div>
+                      <div className="skeleton-details">
+                        <div className="skeleton-line skeleton-name skeleton-pulse"></div>
+                        <div className="skeleton-line skeleton-artist skeleton-pulse"></div>
+                        <div className="skeleton-line skeleton-album skeleton-pulse"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : searchResults.length > 0 && (
                 <div className="search-results">
                   {searchResults.map(track => (
                     <div 
