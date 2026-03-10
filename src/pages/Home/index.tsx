@@ -49,8 +49,10 @@ export function Home() {
     const playlistCovers = playlist.coverImages;
     if (!playlistCovers || playlistCovers.length === 0) {
       return (
-        <div className="cover-mosaic placeholder-mosaic">
-          <span>🎵</span>
+        <div className="cover-wrapper">
+          <div className="cover-mosaic placeholder-mosaic">
+            <span>🎵</span>
+          </div>
         </div>
       );
     }
@@ -62,10 +64,12 @@ export function Home() {
     }
 
     return (
-      <div className="cover-mosaic">
-        {slots.map((cover, i) => (
-          <img key={i} src={cover} alt="" className="cover-tile" />
-        ))}
+      <div className="cover-wrapper">
+        <div className="cover-mosaic">
+          {slots.map((cover, i) => (
+            <img key={i} src={cover} alt="" className="cover-tile" />
+          ))}
+        </div>
       </div>
     );
   }
