@@ -22,7 +22,11 @@ export function Login() {
       navigate('/');
     } catch (err) {
       if (err instanceof Error) {
-        setError(err.message);
+        if (err.message.includes("401")) {
+          setError('Credenciais inválidas. Tente novamente.');  
+        } else {
+          setError(err.message);
+        }
       } else {
         setError('Credenciais inválidas. Tente novamente.');
       }
