@@ -38,7 +38,7 @@
   border-radius: 20px;
   padding: 32px;
   max-width: 600px;
-  margin: 0 auto;
+  margin: 32px auto;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -213,4 +213,34 @@
   .profile-actions {
     flex-direction: column;
   }
+}
+
+.follow-requests-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 600px;
+  margin: 32px auto 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.follow-requests-card .section-title {
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 24px;
+}
+
+.follow-requests-section h3 {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 12px;
+}
+
+.follow-requests-section .empty-message {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  margin-top: 12px;
 }

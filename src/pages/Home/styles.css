@@ -68,6 +68,9 @@
 
 .home-main {
   padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .section-header {

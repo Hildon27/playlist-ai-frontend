@@ -1,0 +1,41 @@
+.playlist-card {
+  align-items: center;
+  text-align: center;
+}
+
+.card-actions {
+  width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-action {
+  width: 100%;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-size: 0.9rem;
+}
+
+/* Botão Seguir (Principal) */
+.btn-follow {
+  background-color: #6366f1;
+  color: white;
+}
+
+.btn-follow:hover {
+  background-color: #4f46e5;
+}
+
+/* Botão Seguindo (Secundário/Outlined) */
+.btn-unfollow {
+  background-color: transparent;
+  color: #ef4444; /* Vermelho para indicar "parar" */
+  border: 1px solid #ef4444;
+}
+
+.btn-unfollow:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}

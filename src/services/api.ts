@@ -6,6 +6,7 @@ import type {
   GeneratePlaylistResponse 
 } from '../types/spotify';
 import type { PlaylistsResponse, PlaylistWithMusics } from '../types/playlist';
+import type { FollowRequestProcessingAction } from '../types/follow';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -76,6 +77,63 @@ export const userService = {
 
   async deleteAccount(): Promise<void> {
     await api.delete('/api/users/me');
+  },
+
+  async getAll(page = 1, size = 20) {
+    const response = await api.get('/api/users', {
+      params: { page, size }
+    })
+
+    return response.data
+  },
+
+  async getFollowers() {
+    const response = await api.get('/api/follows/followers')
+    return response.data
+  },
+
+  async getFolloweds() {
+    const response = await api.get('/api/follows/followeds')
+    return response.data
+  },
+
+  async requestFollow(userEmail: string) {
+    const response = await api.post('/api/follow-requests/register', {
+      followedUserEmail: userEmail
+    });
+    return response.data.data;
+  },
+
+  async cancelFollowRequest(requestId: string) {
+    await api.delete(`/api/follow-requests/${requestId}`);
+    return true;
+  },
+
+  async unfollow(userId: string) {
+    await api.delete(`/api/follows/${userId}/unfollow`);
+    return true;
+  },
+
+  async removeFollower(userId: string) {
+    await api.delete(`/api/follows/${userId}/remove`);
+    return true;
+  },
+
+  async getSentFollowRequests() {
+    const response = await api.get('/api/follow-requests/sent');
+    return response.data.data;
+  },
+
+  async getReceivedFollowRequests() {
+    const response = await api.get('/api/follow-requests/received');
+    return response.data.data;
+  },
+
+  async processFollowRequest(id: string, action: FollowRequestProcessingAction) {
+    const response = await api.patch(`/api/follow-requests/${id}/process`, {
+      action
+    });
+    return response.data.data;
   },
 };
 
@@ -188,4 +246,18 @@ export const playlistService = {
   async deletePlaylist(id: string): Promise<void> {
     await api.delete(`/api/playlists/${id}`);
   },
+
+  async getPublicPlaylists(page: number = 1, size: number = 20): Promise<PlaylistsResponse> {
+    const response = await api.get('/api/playlists/public/all', {
+      params: { page, size },
+    });
+
+    const resData = response.data;
+
+    return {
+      success: resData.success,
+      data: resData.data || [],
+      meta: resData.meta || { page, size, total: 0, totalPages: 1 },
+    };
+  }
 };

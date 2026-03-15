@@ -1,52 +1,57 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { IoGlobe, IoLockClosed } from 'react-icons/io5';
 import { useAuth } from '../../contexts/AuthContext';
-import { playlistService } from '../../services/api';
+import { playlistService, userService } from '../../services/api';
 import type { Playlist } from '../../types/playlist';
+import { PlaylistCarousel } from '../../components/PlaylistCarousel';
 import './styles.css';
+import type { UserResponseDTO } from '../../types/user';
+import { UsersCarousel } from '../../components/UsersCarousel';
 
 export function Home() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [publicPlaylists, setPublicPlaylists] = useState<Playlist[]>([]);
+
   const [loading, setLoading] = useState(true);
-  const carouselRef = useRef<HTMLDivElement>(null);
+  const [loadingPublic, setLoadingPublic] = useState(true);
+
+  const [users, setUsers] = useState<UserResponseDTO[]>([])
+  const [loadingUsers, setLoadingUsers] = useState(true)
 
   useEffect(() => {
-    async function loadPlaylists() {
+    async function loadData() {
       try {
-        const response = await playlistService.getMyPlaylists(1, 20);
-        setPlaylists(response.data || []);
+        const [myPlaylists, publicData] = await Promise.all([
+          playlistService.getMyPlaylists(1, 20),
+          playlistService.getPublicPlaylists(1, 20),
+        ]);
+
+        setPlaylists(myPlaylists.data || []);
+        setPublicPlaylists(publicData.data || []);
+
+        const [usersData] = await Promise.all([
+          userService.getAll(1,20)
+        ])
+
+        setUsers(usersData.data || [])
+        setLoadingUsers(false)
       } catch (err) {
         console.error('Erro ao carregar playlists:', err);
       } finally {
         setLoading(false);
+        setLoadingPublic(false);
       }
     }
 
-    loadPlaylists();
+    loadData();
   }, []);
-
-  function scrollCarousel(direction: 'left' | 'right') {
-    if (!carouselRef.current) return;
-    const scrollAmount = 300;
-    carouselRef.current.scrollBy({
-      left: direction === 'left' ? -scrollAmount : scrollAmount,
-      behavior: 'smooth',
-    });
-  }
-
-  function formatDate(dateString: string) {
-    return new Date(dateString).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
-  }
 
   function renderCovers(playlist: Playlist) {
     const playlistCovers = playlist.coverImages;
+
     if (!playlistCovers || playlistCovers.length === 0) {
       return (
         <div className="cover-wrapper">
@@ -57,8 +62,8 @@ export function Home() {
       );
     }
 
-    // Fill to 4 slots: repeat covers if less than 4
     const slots = [...playlistCovers];
+
     while (slots.length < 4) {
       slots.push(playlistCovers[slots.length % playlistCovers.length]);
     }
@@ -90,80 +95,56 @@ export function Home() {
       </header>
 
       <main className="home-main">
-        <div className="section-header">
-          <h2 className="section-title">Minhas Playlists</h2>
-          <div className="carousel-controls">
-            <button 
-              className="carousel-btn" 
-              onClick={() => scrollCarousel('left')}
-              aria-label="Anterior"
-            >
-              ‹
-            </button>
-            <button 
-              className="carousel-btn" 
-              onClick={() => scrollCarousel('right')}
-              aria-label="Próximo"
-            >
-              ›
-            </button>
+
+        <div>
+          <PlaylistCarousel
+            title="Minhas Playlists"
+            playlists={playlists}
+            loading={loading}
+            renderCovers={renderCovers}
+          />
+          <div
+            className="playlist-card create-card"
+            onClick={() => navigate('/create-playlist')}
+          >
+            <div className="create-icon">＋</div>
+            <h3>Criar Nova Playlist</h3>
+            <p>Use IA para gerar playlists inteligentes</p>
           </div>
+          {!loading && playlists.length === 0 && (
+            <p className="empty-message">
+              Você ainda não tem playlists. Crie sua primeira! ✨
+            </p>
+          )}
         </div>
 
-        <div className="carousel-container">
-          <div className="playlists-carousel" ref={carouselRef}>
-            {/* Card para criar nova playlist */}
-            <div
-              className="playlist-card create-card"
-              onClick={() => navigate('/create-playlist')}
-            >
-              <div className="create-icon">＋</div>
-              <h3>Criar Nova Playlist</h3>
-              <p>Use IA para gerar playlists inteligentes</p>
-            </div>
-
-            {loading ? (
-              <>
-                <div className="playlist-card skeleton-card">
-                  <div className="skeleton-cover" />
-                  <div className="skeleton-line wide" />
-                  <div className="skeleton-line medium" />
-                </div>
-                <div className="playlist-card skeleton-card">
-                  <div className="skeleton-cover" />
-                  <div className="skeleton-line wide" />
-                  <div className="skeleton-line medium" />
-                </div>
-              </>
-            ) : (
-              playlists.map((playlist) => (
-                <div
-                  key={playlist.id}
-                  className="playlist-card"
-                  onClick={() => navigate(`/playlists/${playlist.id}`)}
-                >
-                  {renderCovers(playlist)}
-                  <div className="card-header">
-                    <h3>{playlist.name}</h3>
-                    <span className={`privacity-badge ${playlist.privacity.toLowerCase()}`}>
-                      {playlist.privacity.toUpperCase() === 'PUBLIC' ? <IoGlobe size={16} /> : <IoLockClosed size={16} />}
-                    </span>
-                  </div>
-                  {playlist.aiMessage && (
-                    <p className="card-description">{playlist.aiMessage}</p>
-                  )}
-                  <span className="card-date">{formatDate(playlist.createdAt)}</span>
-                </div>
-              ))
-            )}
-          </div>
+        <div>
+          <PlaylistCarousel
+            title="Playlists Públicas"
+            playlists={publicPlaylists}
+            loading={loadingPublic}
+            renderCovers={renderCovers}
+          />
+          {!loadingPublic && publicPlaylists.length === 0 && (
+            <p className="empty-message">
+              Nenhuma playlist pública encontrada. Que tal criar a sua? ✨
+            </p>
+          )}
         </div>
 
-        {!loading && playlists.length === 0 && (
-          <p className="empty-message">
-            Você ainda não tem playlists. Crie sua primeira! ✨
-          </p>
-        )}
+        <div>
+          <UsersCarousel
+            title="Usuários Públicos"
+            users={users}
+            loading={loadingUsers}
+          />
+          {!loadingUsers && users.length === 0 && (
+            <p className="empty-message">
+              Nenhuma usuário com perfil público encontrado ✨
+            </p>
+          )}
+        </div>
+
       </main>
     </div>
   );
