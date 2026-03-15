@@ -73,7 +73,9 @@
   transition: opacity 0.2s;
 }
 
-.btn-accept:hover { opacity: 0.85; }
+.btn-accept:hover {
+  opacity: 0.85;
+}
 
 .btn-reject {
   padding: 7px 14px;
@@ -87,7 +89,11 @@
   transition: background 0.2s;
 }
 
-.btn-reject:hover { background: rgba(239, 68, 68, 0.15); color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
+.btn-reject:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+}
 
 .btn-pending {
   padding: 7px 14px;
@@ -101,7 +107,9 @@
   transition: background 0.2s;
 }
 
-.btn-pending:hover { background: rgba(255, 255, 255, 0.08); }
+.btn-pending:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
 
 .follow-requests-divider {
   height: 1px;

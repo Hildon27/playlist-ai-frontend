@@ -1,7 +1,7 @@
-import { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { IoGlobe, IoLockClosed } from 'react-icons/io5';
-import type { Playlist } from '../../types/playlist';
+import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { IoGlobe, IoLockClosed } from "react-icons/io5";
+import type { Playlist } from "../../types/playlist";
 
 interface PlaylistCarouselProps {
   title: string;
@@ -19,20 +19,20 @@ export function PlaylistCarousel({
   const navigate = useNavigate();
   const carouselRef = useRef<HTMLDivElement>(null);
 
-  function scrollCarousel(direction: 'left' | 'right') {
+  function scrollCarousel(direction: "left" | "right") {
     if (!carouselRef.current) return;
 
     carouselRef.current.scrollBy({
-      left: direction === 'left' ? -300 : 300,
-      behavior: 'smooth',
+      left: direction === "left" ? -300 : 300,
+      behavior: "smooth",
     });
   }
 
   function formatDate(dateString: string) {
-    return new Date(dateString).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
+    return new Date(dateString).toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
     });
   }
 
@@ -44,14 +44,14 @@ export function PlaylistCarousel({
         <div className="carousel-controls">
           <button
             className="carousel-btn"
-            onClick={() => scrollCarousel('left')}
+            onClick={() => scrollCarousel("left")}
           >
             ‹
           </button>
 
           <button
             className="carousel-btn"
-            onClick={() => scrollCarousel('right')}
+            onClick={() => scrollCarousel("right")}
           >
             ›
           </button>
@@ -87,7 +87,7 @@ export function PlaylistCarousel({
                   <span
                     className={`privacity-badge ${playlist.privacity.toLowerCase()}`}
                   >
-                    {playlist.privacity.toUpperCase() === 'PUBLIC' ? (
+                    {playlist.privacity.toUpperCase() === "PUBLIC" ? (
                       <IoGlobe size={16} />
                     ) : (
                       <IoLockClosed size={16} />

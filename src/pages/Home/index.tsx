@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import { playlistService, userService } from '../../services/api';
-import type { Playlist } from '../../types/playlist';
-import { PlaylistCarousel } from '../../components/PlaylistCarousel';
-import './styles.css';
-import type { UserResponseDTO } from '../../types/user';
-import { UsersCarousel } from '../../components/UsersCarousel';
+import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import { playlistService, userService } from "../../services/api";
+import type { Playlist } from "../../types/playlist";
+import { PlaylistCarousel } from "../../components/PlaylistCarousel";
+import "./styles.css";
+import type { UserResponseDTO } from "../../types/user";
+import { UsersCarousel } from "../../components/UsersCarousel";
 
 export function Home() {
   const navigate = useNavigate();
@@ -18,8 +18,8 @@ export function Home() {
   const [loading, setLoading] = useState(true);
   const [loadingPublic, setLoadingPublic] = useState(true);
 
-  const [users, setUsers] = useState<UserResponseDTO[]>([])
-  const [loadingUsers, setLoadingUsers] = useState(true)
+  const [users, setUsers] = useState<UserResponseDTO[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
 
   useEffect(() => {
     async function loadData() {
@@ -32,14 +32,12 @@ export function Home() {
         setPlaylists(myPlaylists.data || []);
         setPublicPlaylists(publicData.data || []);
 
-        const [usersData] = await Promise.all([
-          userService.getAll(1,20)
-        ])
+        const [usersData] = await Promise.all([userService.getAll(1, 20)]);
 
-        setUsers(usersData.data || [])
-        setLoadingUsers(false)
+        setUsers(usersData.data || []);
+        setLoadingUsers(false);
       } catch (err) {
-        console.error('Erro ao carregar playlists:', err);
+        console.error("Erro ao carregar playlists:", err);
       } finally {
         setLoading(false);
         setLoadingPublic(false);
@@ -95,7 +93,6 @@ export function Home() {
       </header>
 
       <main className="home-main">
-
         <div>
           <PlaylistCarousel
             title="Minhas Playlists"
@@ -105,7 +102,7 @@ export function Home() {
           />
           <div
             className="playlist-card create-card"
-            onClick={() => navigate('/create-playlist')}
+            onClick={() => navigate("/create-playlist")}
           >
             <div className="create-icon">＋</div>
             <h3>Criar Nova Playlist</h3>
@@ -144,7 +141,6 @@ export function Home() {
             </p>
           )}
         </div>
-
       </main>
     </div>
   );

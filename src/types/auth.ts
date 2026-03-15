@@ -1,4 +1,4 @@
-export type Privacity = 'public' | 'private' | 'PUBLIC' | 'PRIVATE';
+export type Privacity = "public" | "private" | "PUBLIC" | "PRIVATE";
 
 export interface RegisterRequest {
   firstName: string;
@@ -31,7 +31,7 @@ export interface UpdateUserRequest {
   firstName?: string;
   lastName?: string;
   email?: string;
-  privacity?: 'public' | 'private';
+  privacity?: "public" | "private";
 }
 
 export interface AuthContextType {

@@ -1,26 +1,29 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { Login } from './pages/Login';
-import { Register } from './pages/Register';
-import { Home } from './pages/Home';
-import { PlaylistGenerator } from './pages/PlaylistGenerator';
-import { PlaylistDetail } from './pages/PlaylistDetail';
-import { Profile } from './pages/Profile';
-import type { ReactNode } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
+import { Home } from "./pages/Home";
+import { PlaylistGenerator } from "./pages/PlaylistGenerator";
+import { PlaylistDetail } from "./pages/PlaylistDetail";
+import { Profile } from "./pages/Profile";
+import type { ReactNode } from "react";
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
     return (
-      <div style={{ 
-        minHeight: '100vh', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-        color: '#fff'
-      }}>
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background:
+            "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
+          color: "#fff",
+        }}
+      >
         Carregando...
       </div>
     );
@@ -38,14 +41,17 @@ function PublicRoute({ children }: { children: ReactNode }) {
 
   if (isLoading) {
     return (
-      <div style={{ 
-        minHeight: '100vh', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-        color: '#fff'
-      }}>
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background:
+            "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
+          color: "#fff",
+        }}
+      >
         Carregando...
       </div>
     );
@@ -61,53 +67,53 @@ function PublicRoute({ children }: { children: ReactNode }) {
 function AppRoutes() {
   return (
     <Routes>
-      <Route 
-        path="/login" 
+      <Route
+        path="/login"
         element={
           <PublicRoute>
             <Login />
           </PublicRoute>
-        } 
+        }
       />
-      <Route 
-        path="/register" 
+      <Route
+        path="/register"
         element={
           <PublicRoute>
             <Register />
           </PublicRoute>
-        } 
+        }
       />
-      <Route 
-        path="/" 
+      <Route
+        path="/"
         element={
           <ProtectedRoute>
             <Home />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/create-playlist" 
+      <Route
+        path="/create-playlist"
         element={
           <ProtectedRoute>
             <PlaylistGenerator />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/playlists/:id" 
+      <Route
+        path="/playlists/:id"
         element={
           <ProtectedRoute>
             <PlaylistDetail />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/profile" 
+      <Route
+        path="/profile"
         element={
           <ProtectedRoute>
             <Profile />
           </ProtectedRoute>
-        } 
+        }
       />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
@@ -124,4 +130,4 @@ function App() {
   );
 }
 
-export default App
+export default App;

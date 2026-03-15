@@ -22,7 +22,7 @@ export interface GeneratePlaylistRequest {
   name: string;
   seedTracks: SeedTrack[];
   limit?: number;
-  privacity?: 'public' | 'private';
+  privacity?: "public" | "private";
 }
 
 export interface GeneratedTrack {

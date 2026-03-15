@@ -1,4 +1,4 @@
-import type { Privacity } from './auth';
+import type { Privacity } from "./auth";
 
 export interface Playlist {
   id: string;

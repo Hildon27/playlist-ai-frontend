@@ -1,76 +1,92 @@
-import { useEffect, useRef, useState } from "react"
-import type { UserResponseWithFollowInfoDTO } from "../../types/user"
-import "./style.css"
-import { userService } from "../../services/api"
+import { useEffect, useRef, useState } from "react";
+import type { UserResponseWithFollowInfoDTO } from "../../types/user";
+import "./style.css";
+import { userService } from "../../services/api";
 
 interface Props {
-  title: string
-  users: UserResponseWithFollowInfoDTO[]
-  loading?: boolean
+  title: string;
+  users: UserResponseWithFollowInfoDTO[];
+  loading?: boolean;
 }
 
 export function UsersCarousel({ title, users: initialUsers, loading }: Props) {
   const [users, setUsers] = useState(initialUsers);
-  const carouselRef = useRef<HTMLDivElement>(null)
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setUsers(initialUsers);
   }, [initialUsers]);
 
   function scrollCarousel(direction: "left" | "right") {
-    if (!carouselRef.current) return
+    if (!carouselRef.current) return;
 
     carouselRef.current.scrollBy({
       left: direction === "left" ? -300 : 300,
       behavior: "smooth",
-    })
+    });
   }
 
   function getInitials(user: UserResponseWithFollowInfoDTO) {
-    return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
+    return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
   }
 
-  function handleFollowClick(user: UserResponseWithFollowInfoDTO, e: React.MouseEvent) {
-    e.stopPropagation()
+  function handleFollowClick(
+    user: UserResponseWithFollowInfoDTO,
+    e: React.MouseEvent,
+  ) {
+    e.stopPropagation();
     if (!user.followedByLoggedUser && !user.followRequestPending) {
-      userService.requestFollow(user.email).then(res => {
-        setUsers(prev =>
-          prev.map(u =>
-            u.id === user.id
-              ? { ...u, followRequestPending: true, followRequestId: res.id }
-              : u
-          )
-        )
-      }).catch(err => console.error("Erro ao enviar solicitação", err))
+      userService
+        .requestFollow(user.email)
+        .then((res) => {
+          setUsers((prev) =>
+            prev.map((u) =>
+              u.id === user.id
+                ? { ...u, followRequestPending: true, followRequestId: res.id }
+                : u,
+            ),
+          );
+        })
+        .catch((err) => console.error("Erro ao enviar solicitação", err));
     }
   }
 
-  function handleCancelFollowRequest(user: UserResponseWithFollowInfoDTO, e: React.MouseEvent) {
-    e.stopPropagation()
+  function handleCancelFollowRequest(
+    user: UserResponseWithFollowInfoDTO,
+    e: React.MouseEvent,
+  ) {
+    e.stopPropagation();
     if (user.followRequestPending && user.followRequestId) {
-      userService.cancelFollowRequest(user.followRequestId).then(() => {
-        setUsers(prev =>
-          prev.map(u =>
-            u.id === user.id
-              ? { ...u, followRequestPending: false, followRequestId: undefined }
-              : u
-          )
-        )
-      }).catch(err => console.error("Erro ao cancelar solicitação", err))
+      userService
+        .cancelFollowRequest(user.followRequestId)
+        .then(() => {
+          setUsers((prev) =>
+            prev.map((u) =>
+              u.id === user.id
+                ? {
+                    ...u,
+                    followRequestPending: false,
+                    followRequestId: undefined,
+                  }
+                : u,
+            ),
+          );
+        })
+        .catch((err) => console.error("Erro ao cancelar solicitação", err));
     }
   }
 
   async function handleUnfollow(e: React.MouseEvent, userId: string) {
-    e.stopPropagation()
+    e.stopPropagation();
     try {
-      await userService.unfollow(userId)
-      setUsers(prev =>
-        prev.map(u =>
-          u.id === userId ? { ...u, followedByLoggedUser: false } : u
-        )
-      )
+      await userService.unfollow(userId);
+      setUsers((prev) =>
+        prev.map((u) =>
+          u.id === userId ? { ...u, followedByLoggedUser: false } : u,
+        ),
+      );
     } catch (err) {
-      console.error("Erro ao deixar de seguir usuário", err)
+      console.error("Erro ao deixar de seguir usuário", err);
     }
   }
 
@@ -101,20 +117,17 @@ export function UsersCarousel({ title, users: initialUsers, loading }: Props) {
           {loading ? (
             <>
               <div className="playlist-card skeleton-card">
-                <div className="skeleton-cover"/>
-                <div className="skeleton-line wide"/>
+                <div className="skeleton-cover" />
+                <div className="skeleton-line wide" />
               </div>
               <div className="playlist-card skeleton-card">
-                <div className="skeleton-cover"/>
-                <div className="skeleton-line wide"/>
+                <div className="skeleton-cover" />
+                <div className="skeleton-line wide" />
               </div>
             </>
           ) : (
-            users.map(user => (
-              <div
-                key={user.id}
-                className="playlist-card card-relative"
-              >
+            users.map((user) => (
+              <div key={user.id} className="playlist-card card-relative">
                 {/* Avatar */}
                 <div className="cover-wrapper">
                   <div
@@ -141,13 +154,9 @@ export function UsersCarousel({ title, users: initialUsers, loading }: Props) {
                   </h3>
                 </div>
 
-                <p className="card-description">
-                  {user.email}
-                </p>
+                <p className="card-description">{user.email}</p>
 
-                <span className="card-date">
-                  Perfil público
-                </span>
+                <span className="card-date">Perfil público</span>
 
                 {/* Botões de Ação Embaixo */}
                 <div className="card-actions">
@@ -180,5 +189,5 @@ export function UsersCarousel({ title, users: initialUsers, loading }: Props) {
         </div>
       </div>
     </>
-  )
+  );
 }

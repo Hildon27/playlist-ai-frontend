@@ -296,8 +296,12 @@
 }
 
 @keyframes soundBars {
-  0% { transform: scaleY(1); }
-  100% { transform: scaleY(0.4); }
+  0% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0.4);
+  }
 }
 
 .track-main {
@@ -477,9 +481,10 @@
 }
 
 .skeleton-pulse {
-  background: linear-gradient(90deg, 
-    rgba(255, 255, 255, 0.05) 0%, 
-    rgba(255, 255, 255, 0.1) 50%, 
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
     rgba(255, 255, 255, 0.05) 100%
   );
   background-size: 200% 100%;
@@ -506,17 +511,22 @@
 
 .track-skeleton .track-cover-placeholder {
   animation: skeleton-shimmer 1.5s ease-in-out infinite;
-  background: linear-gradient(90deg, 
-    rgba(255, 255, 255, 0.05) 0%, 
-    rgba(255, 255, 255, 0.1) 50%, 
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
     rgba(255, 255, 255, 0.05) 100%
   );
   background-size: 200% 100%;
 }
 
 @keyframes skeleton-shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* Responsive */
@@ -525,7 +535,7 @@
   .track-item {
     grid-template-columns: 40px 2fr 80px 60px;
   }
-  
+
   .track-album {
     display: none;
   }
