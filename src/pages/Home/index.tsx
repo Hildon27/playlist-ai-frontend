@@ -1,9 +1,16 @@
 import { useEffect, useState, useRef } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { IoGlobe, IoLockClosed } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { playlistService } from '../../services/api';
 import type { Playlist } from '../../types/playlist';
+import {
+  HomeHeader,
+  SectionHeader,
+  CarouselControls,
+  CreatePlaylistCard,
+  PlaylistCard,
+  PlaylistCardSkeleton,
+} from '../../components';
 import './styles.css';
 
 export function Home() {
@@ -37,123 +44,36 @@ export function Home() {
     });
   }
 
-  function formatDate(dateString: string) {
-    return new Date(dateString).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
-  }
-
-  function renderCovers(playlist: Playlist) {
-    const playlistCovers = playlist.coverImages;
-    if (!playlistCovers || playlistCovers.length === 0) {
-      return (
-        <div className="cover-wrapper">
-          <div className="cover-mosaic placeholder-mosaic">
-            <span>🎵</span>
-          </div>
-        </div>
-      );
-    }
-
-    // Fill to 4 slots: repeat covers if less than 4
-    const slots = [...playlistCovers];
-    while (slots.length < 4) {
-      slots.push(playlistCovers[slots.length % playlistCovers.length]);
-    }
-
-    return (
-      <div className="cover-wrapper">
-        <div className="cover-mosaic">
-          {slots.map((cover, i) => (
-            <img key={i} src={cover} alt="" className="cover-tile" />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="home-container">
-      <header className="home-header">
-        <h1>Playlist AI</h1>
-        <div className="user-info">
-          <span className="user-name">Olá, {user?.firstName}</span>
-          <Link to="/profile" className="profile-link">
-            Meu Perfil
-          </Link>
-          <button onClick={logout} className="logout-button">
-            Sair
-          </button>
-        </div>
-      </header>
+      <HomeHeader userName={user?.firstName ?? ''} onLogout={logout} />
 
       <main className="home-main">
-        <div className="section-header">
-          <h2 className="section-title">Minhas Playlists</h2>
-          <div className="carousel-controls">
-            <button 
-              className="carousel-btn" 
-              onClick={() => scrollCarousel('left')}
-              aria-label="Anterior"
-            >
-              ‹
-            </button>
-            <button 
-              className="carousel-btn" 
-              onClick={() => scrollCarousel('right')}
-              aria-label="Próximo"
-            >
-              ›
-            </button>
-          </div>
-        </div>
+        <SectionHeader
+          title="Minhas Playlists"
+        >
+          <CarouselControls
+            onLeft={() => scrollCarousel('left')}
+            onRight={() => scrollCarousel('right')}
+          />
+        </SectionHeader>
 
         <div className="carousel-container">
           <div className="playlists-carousel" ref={carouselRef}>
-            {/* Card para criar nova playlist */}
-            <div
-              className="playlist-card create-card"
-              onClick={() => navigate('/create-playlist')}
-            >
-              <div className="create-icon">＋</div>
-              <h3>Criar Nova Playlist</h3>
-              <p>Use IA para gerar playlists inteligentes</p>
-            </div>
+            <CreatePlaylistCard onClick={() => navigate('/create-playlist')} />
 
             {loading ? (
               <>
-                <div className="playlist-card skeleton-card">
-                  <div className="skeleton-cover" />
-                  <div className="skeleton-line wide" />
-                  <div className="skeleton-line medium" />
-                </div>
-                <div className="playlist-card skeleton-card">
-                  <div className="skeleton-cover" />
-                  <div className="skeleton-line wide" />
-                  <div className="skeleton-line medium" />
-                </div>
+                <PlaylistCardSkeleton />
+                <PlaylistCardSkeleton />
               </>
             ) : (
               playlists.map((playlist) => (
-                <div
+                <PlaylistCard
                   key={playlist.id}
-                  className="playlist-card"
+                  playlist={playlist}
                   onClick={() => navigate(`/playlists/${playlist.id}`)}
-                >
-                  {renderCovers(playlist)}
-                  <div className="card-header">
-                    <h3>{playlist.name}</h3>
-                    <span className={`privacity-badge ${playlist.privacity.toLowerCase()}`}>
-                      {playlist.privacity.toUpperCase() === 'PUBLIC' ? <IoGlobe size={16} /> : <IoLockClosed size={16} />}
-                    </span>
-                  </div>
-                  {playlist.aiMessage && (
-                    <p className="card-description">{playlist.aiMessage}</p>
-                  )}
-                  <span className="card-date">{formatDate(playlist.createdAt)}</span>
-                </div>
+                />
               ))
             )}
           </div>

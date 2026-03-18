@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import type { UpdateUserRequest } from '../../types/auth';
+import { FormGroup, BackLink } from '../../components';
+import { formatDateLong } from '../../utils/date';
 import './styles.css';
 
 export function Profile() {
@@ -31,7 +32,7 @@ export function Profile() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     setError(null);
     setSuccess(null);
   };
@@ -78,14 +79,6 @@ export function Profile() {
     return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric',
-    });
-  };
-
   if (!user) {
     return (
       <div className="profile-container">
@@ -98,23 +91,18 @@ export function Profile() {
     <div className="profile-container">
       <div className="profile-header">
         <h1>Meu Perfil</h1>
-        <Link to="/" className="back-link">
-          ← Voltar
-        </Link>
+        <BackLink to="/" />
       </div>
 
       <div className="profile-card">
-        <div className="profile-avatar">
-          {getInitials()}
-        </div>
+        <div className="profile-avatar">{getInitials()}</div>
 
         <form className="profile-form" onSubmit={handleSubmit}>
           {error && <div className="error-message">{error}</div>}
           {success && <div className="success-message">{success}</div>}
 
           <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="firstName">Nome</label>
+            <FormGroup label="Nome" htmlFor="firstName">
               <input
                 type="text"
                 id="firstName"
@@ -124,10 +112,9 @@ export function Profile() {
                 disabled={!isEditing || loading}
                 placeholder="Seu nome"
               />
-            </div>
+            </FormGroup>
 
-            <div className="form-group">
-              <label htmlFor="lastName">Sobrenome</label>
+            <FormGroup label="Sobrenome" htmlFor="lastName">
               <input
                 type="text"
                 id="lastName"
@@ -137,11 +124,10 @@ export function Profile() {
                 disabled={!isEditing || loading}
                 placeholder="Seu sobrenome"
               />
-            </div>
+            </FormGroup>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
+          <FormGroup label="Email" htmlFor="email">
             <input
               type="email"
               id="email"
@@ -151,10 +137,9 @@ export function Profile() {
               disabled={!isEditing || loading}
               placeholder="seu@email.com"
             />
-          </div>
+          </FormGroup>
 
-          <div className="form-group">
-            <label htmlFor="privacity">Privacidade do Perfil</label>
+          <FormGroup label="Privacidade do Perfil" htmlFor="privacity">
             <select
               id="privacity"
               name="privacity"
@@ -165,16 +150,16 @@ export function Profile() {
               <option value="public">Público</option>
               <option value="private">Privado</option>
             </select>
-          </div>
+          </FormGroup>
 
           <div className="profile-info">
             <div className="profile-info-item">
               <span>Membro desde</span>
-              <span>{formatDate(user.createdAt)}</span>
+              <span>{formatDateLong(user.createdAt)}</span>
             </div>
             <div className="profile-info-item">
               <span>Última atualização</span>
-              <span>{formatDate(user.updatedAt)}</span>
+              <span>{formatDateLong(user.updatedAt)}</span>
             </div>
           </div>
 
