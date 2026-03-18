@@ -1,6 +1,8 @@
 export { AuthLayout } from './AuthLayout';
 export { BackLink } from './BackLink';
 export { CarouselControls } from './CarouselControls';
+export { CommentItem } from './CommentItem';
+export { CommentsSection } from './CommentsSection';
 export { CreatePlaylistCard } from './CreatePlaylistCard';
 export { FormGroup } from './FormGroup';
 export { HomeHeader } from './HomeHeader';

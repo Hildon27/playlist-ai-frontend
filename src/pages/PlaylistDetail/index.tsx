@@ -3,7 +3,8 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { playlistService, spotifyService } from '../../services/api';
 import type { PlaylistWithMusics } from '../../types/playlist';
 import type { SpotifyTrack } from '../../types/spotify';
-import { PlaylistDetailCover, TrackSkeleton, TrackItem, BackLink } from '../../components';
+import { PlaylistDetailCover, TrackSkeleton, TrackItem, BackLink, CommentsSection } from '../../components';
+import { useAuth } from '../../contexts/AuthContext';
 import { formatDateLong } from '../../utils/date';
 import './styles.css';
 
@@ -16,6 +17,7 @@ export function PlaylistDetail() {
   const [loadingTracks, setLoadingTracks] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [playingPreview, setPlayingPreview] = useState<string | null>(null);
+  const { user } = useAuth();
 
   const loadTrackDetails = useCallback(async (externalIds: string[]) => {
     if (externalIds.length === 0) return;
@@ -205,6 +207,8 @@ export function PlaylistDetail() {
           </div>
         )}
       </section>
+
+      <CommentsSection playlistId={playlist.id} currentUserId={user?.id} />
 
       <BackLink to="/" className="back-link" />
     </div>
