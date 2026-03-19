@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
 type AuthLayoutProps = {
   title: string;
@@ -7,7 +7,12 @@ type AuthLayoutProps = {
   footer: ReactNode;
 };
 
-export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProps) {
+export function AuthLayout({
+  title,
+  subtitle,
+  children,
+  footer,
+}: AuthLayoutProps) {
   return (
     <div className="auth-container">
       <div className="auth-card">
@@ -16,9 +21,7 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
           <p>{subtitle}</p>
         </div>
         {children}
-        <div className="auth-footer">
-          {footer}
-        </div>
+        <div className="auth-footer">{footer}</div>
       </div>
     </div>
   );

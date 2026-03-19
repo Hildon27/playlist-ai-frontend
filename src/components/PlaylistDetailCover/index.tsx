@@ -3,7 +3,10 @@ type PlaylistDetailCoverProps = {
   playlistName: string;
 };
 
-export function PlaylistDetailCover({ coverImages, playlistName }: PlaylistDetailCoverProps) {
+export function PlaylistDetailCover({
+  coverImages,
+  playlistName,
+}: PlaylistDetailCoverProps) {
   if (coverImages.length >= 4) {
     return (
       <div className="cover-mosaic">

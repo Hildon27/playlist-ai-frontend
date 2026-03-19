@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import type { ReactNode } from "react";
+import { Link } from "react-router-dom";
 
 type BackLinkProps = {
   to?: string;
@@ -8,7 +8,12 @@ type BackLinkProps = {
   children?: ReactNode;
 };
 
-export function BackLink({ to = '/', onClick, className = 'back-link', children = '← Voltar' }: BackLinkProps) {
+export function BackLink({
+  to = "/",
+  onClick,
+  className = "back-link",
+  children = "← Voltar",
+}: BackLinkProps) {
   if (onClick) {
     return (
       <button type="button" onClick={onClick} className={className}>

@@ -1,12 +1,18 @@
-import { useEffect, useState, useCallback } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
-import { playlistService, spotifyService } from '../../services/api';
-import type { PlaylistWithMusics } from '../../types/playlist';
-import type { SpotifyTrack } from '../../types/spotify';
-import { PlaylistDetailCover, TrackSkeleton, TrackItem, BackLink, CommentsSection } from '../../components';
-import { useAuth } from '../../contexts/AuthContext';
-import { formatDateLong } from '../../utils/date';
-import './styles.css';
+import { useEffect, useState, useCallback } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { playlistService, spotifyService } from "../../services/api";
+import type { PlaylistWithMusics } from "../../types/playlist";
+import type { SpotifyTrack } from "../../types/spotify";
+import {
+  PlaylistDetailCover,
+  TrackSkeleton,
+  TrackItem,
+  BackLink,
+  CommentsSection,
+} from "../../components";
+import { useAuth } from "../../contexts/AuthContext";
+import { formatDateLong } from "../../utils/date";
+import "./styles.css";
 
 export function PlaylistDetail() {
   const { id } = useParams<{ id: string }>();
@@ -31,7 +37,10 @@ export function PlaylistDetail() {
       });
       setTracks(trackMap);
     } catch (err) {
-      console.error('Erro ao carregar detalhes das músicas (Spotify pode estar indisponível):', err);
+      console.error(
+        "Erro ao carregar detalhes das músicas (Spotify pode estar indisponível):",
+        err,
+      );
     }
     setLoadingTracks(false);
   }, []);
@@ -43,7 +52,10 @@ export function PlaylistDetail() {
       try {
         setLoading(true);
         setError(null);
-        const data = (await playlistService.getPlaylistById(id, true)) as PlaylistWithMusics;
+        const data = (await playlistService.getPlaylistById(
+          id,
+          true,
+        )) as PlaylistWithMusics;
         setPlaylist(data);
 
         if (data.musics && data.musics.length > 0) {
@@ -51,8 +63,8 @@ export function PlaylistDetail() {
           loadTrackDetails(externalIds);
         }
       } catch (err) {
-        console.error('Erro ao carregar playlist:', err);
-        setError('Não foi possível carregar a playlist.');
+        console.error("Erro ao carregar playlist:", err);
+        setError("Não foi possível carregar a playlist.");
       } finally {
         setLoading(false);
       }
@@ -70,10 +82,10 @@ export function PlaylistDetail() {
 
     try {
       await playlistService.deletePlaylist(playlist.id);
-      navigate('/');
+      navigate("/");
     } catch (err) {
-      console.error('Erro ao excluir playlist:', err);
-      alert('Não foi possível excluir a playlist.');
+      console.error("Erro ao excluir playlist:", err);
+      alert("Não foi possível excluir a playlist.");
     }
   }
 
@@ -93,11 +105,15 @@ export function PlaylistDetail() {
   function handlePreviewPlay(previewUrl: string, trackId: string) {
     if (playingPreview === trackId) {
       setPlayingPreview(null);
-      const audio = document.getElementById('preview-audio') as HTMLAudioElement;
+      const audio = document.getElementById(
+        "preview-audio",
+      ) as HTMLAudioElement;
       if (audio) audio.pause();
     } else {
       setPlayingPreview(trackId);
-      const audio = document.getElementById('preview-audio') as HTMLAudioElement;
+      const audio = document.getElementById(
+        "preview-audio",
+      ) as HTMLAudioElement;
       if (audio) {
         audio.src = previewUrl;
         audio.play();
@@ -117,7 +133,7 @@ export function PlaylistDetail() {
     return (
       <div className="playlist-detail-container">
         <div className="error-state">
-          <p>{error || 'Playlist não encontrada.'}</p>
+          <p>{error || "Playlist não encontrada."}</p>
           <Link to="/" className="back-btn">
             Voltar
           </Link>
@@ -138,7 +154,10 @@ export function PlaylistDetail() {
       <header className="playlist-header">
         <div className="playlist-header-content">
           <div className="playlist-cover">
-            <PlaylistDetailCover coverImages={coverImages} playlistName={playlist.name} />
+            <PlaylistDetailCover
+              coverImages={coverImages}
+              playlistName={playlist.name}
+            />
           </div>
           <div className="playlist-meta">
             <span className="playlist-type">Playlist</span>
@@ -147,10 +166,13 @@ export function PlaylistDetail() {
               <p className="ai-message">&quot;{playlist.aiMessage}&quot;</p>
             )}
             <div className="playlist-stats">
-              <span className={`privacity-tag ${playlist.privacity.toLowerCase()}`}>
-                {playlist.privacity === 'PUBLIC' || playlist.privacity === 'public'
-                  ? '🌐 Pública'
-                  : '🔒 Privada'}
+              <span
+                className={`privacity-tag ${playlist.privacity.toLowerCase()}`}
+              >
+                {playlist.privacity === "PUBLIC" ||
+                playlist.privacity === "public"
+                  ? "🌐 Pública"
+                  : "🔒 Privada"}
               </span>
               <span className="stat-divider">•</span>
               <span>{playlist.musics.length} músicas</span>
@@ -188,22 +210,20 @@ export function PlaylistDetail() {
               <span className="track-duration-header">⏱</span>
               <span className="track-actions-header"></span>
             </div>
-            {loadingTracks && tracks.size === 0 ? (
-              Array.from({ length: Math.min(playlist.musics.length, 5) }).map((_, i) => (
-                <TrackSkeleton key={`skeleton-${i}`} />
-              ))
-            ) : (
-              playlist.musics.map((music, index) => (
-                <TrackItem
-                  key={music.externalId}
-                  music={music}
-                  trackDetails={tracks.get(music.externalId)}
-                  index={index}
-                  isPlaying={playingPreview === music.externalId}
-                  onPreviewPlay={handlePreviewPlay}
-                />
-              ))
-            )}
+            {loadingTracks && tracks.size === 0
+              ? Array.from({ length: Math.min(playlist.musics.length, 5) }).map(
+                  (_, i) => <TrackSkeleton key={`skeleton-${i}`} />,
+                )
+              : playlist.musics.map((music, index) => (
+                  <TrackItem
+                    key={music.externalId}
+                    music={music}
+                    trackDetails={tracks.get(music.externalId)}
+                    index={index}
+                    isPlaying={playingPreview === music.externalId}
+                    onPreviewPlay={handlePreviewPlay}
+                  />
+                ))}
           </div>
         )}
       </section>

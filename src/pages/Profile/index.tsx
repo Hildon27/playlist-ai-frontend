@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
-import type { UpdateUserRequest } from '../../types/auth';
-import { FormGroup, BackLink } from '../../components';
-import { formatDateLong } from '../../utils/date';
-import './styles.css';
+import { useState, useEffect } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import type { UpdateUserRequest } from "../../types/auth";
+import { FormGroup, BackLink } from "../../components";
+import { formatDateLong } from "../../utils/date";
+import "./styles.css";
+import "./styles.css";
+import { FollowSocialSection } from "../../components/Follow";
 
 export function Profile() {
   const { user, updateUser } = useAuth();
@@ -13,24 +15,26 @@ export function Profile() {
   const [success, setSuccess] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<UpdateUserRequest>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    privacity: 'private',
+    firstName: "",
+    lastName: "",
+    email: "",
+    privacity: "private",
   });
 
   useEffect(() => {
-    if (user) {
-      setFormData({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        privacity: user.privacity.toLowerCase() as 'public' | 'private',
-      });
-    }
+    if (!user) return;
+
+    setFormData({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      privacity: user.privacity.toLowerCase() as "public" | "private",
+    });
   }, [user]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setError(null);
@@ -39,10 +43,7 @@ export function Profile() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isEditing) {
-      setIsEditing(true);
-      return;
-    }
+    if (!isEditing) return setIsEditing(true);
 
     setLoading(true);
     setError(null);
@@ -50,11 +51,10 @@ export function Profile() {
 
     try {
       await updateUser(formData);
-      setSuccess('Perfil atualizado com sucesso!');
+      setSuccess("Perfil atualizado com sucesso!");
       setIsEditing(false);
-    } catch (err: unknown) {
-      const error = err as { response?: { data?: { error?: string } } };
-      setError(error.response?.data?.error || 'Erro ao atualizar perfil');
+    } catch (err: any) {
+      setError(err.response?.data?.error || "Erro ao atualizar perfil");
     } finally {
       setLoading(false);
     }
@@ -66,7 +66,7 @@ export function Profile() {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        privacity: user.privacity.toLowerCase() as 'public' | 'private',
+        privacity: user.privacity.toLowerCase() as "public" | "private",
       });
     }
     setIsEditing(false);
@@ -75,25 +75,22 @@ export function Profile() {
   };
 
   const getInitials = () => {
-    if (!user) return '?';
+    if (!user) return "?";
     return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
   };
 
-  if (!user) {
-    return (
-      <div className="profile-container">
-        <p style={{ color: '#fff', textAlign: 'center' }}>Carregando...</p>
-      </div>
-    );
-  }
+  if (!user)
+    return <p style={{ color: "#fff", textAlign: "center" }}>Carregando...</p>;
 
   return (
     <div className="profile-container">
+      {/* HEADER */}
       <div className="profile-header">
         <h1>Meu Perfil</h1>
         <BackLink to="/" />
       </div>
 
+      {/* FORM */}
       <div className="profile-card">
         <div className="profile-avatar">{getInitials()}</div>
 
@@ -104,44 +101,35 @@ export function Profile() {
           <div className="form-row">
             <FormGroup label="Nome" htmlFor="firstName">
               <input
-                type="text"
-                id="firstName"
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
                 disabled={!isEditing || loading}
-                placeholder="Seu nome"
               />
             </FormGroup>
 
             <FormGroup label="Sobrenome" htmlFor="lastName">
               <input
-                type="text"
-                id="lastName"
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
                 disabled={!isEditing || loading}
-                placeholder="Seu sobrenome"
               />
             </FormGroup>
           </div>
 
           <FormGroup label="Email" htmlFor="email">
             <input
-              type="email"
-              id="email"
               name="email"
+              type="email"
               value={formData.email}
               onChange={handleChange}
               disabled={!isEditing || loading}
-              placeholder="seu@email.com"
             />
           </FormGroup>
 
           <FormGroup label="Privacidade do Perfil" htmlFor="privacity">
             <select
-              id="privacity"
               name="privacity"
               value={formData.privacity}
               onChange={handleChange}
@@ -166,26 +154,21 @@ export function Profile() {
           <div className="profile-actions">
             {isEditing ? (
               <>
-                <button
-                  type="button"
-                  className="btn-cancel"
-                  onClick={handleCancel}
-                  disabled={loading}
-                >
+                <button type="button" onClick={handleCancel} disabled={loading}>
                   Cancelar
                 </button>
-                <button type="submit" className="btn-save" disabled={loading}>
-                  {loading ? 'Salvando...' : 'Salvar Alterações'}
+                <button type="submit" disabled={loading}>
+                  Salvar Alterações
                 </button>
               </>
             ) : (
-              <button type="submit" className="btn-save">
-                Editar Perfil
-              </button>
+              <button type="submit">Editar Perfil</button>
             )}
           </div>
         </form>
       </div>
+
+      <FollowSocialSection />
     </div>
   );
 }

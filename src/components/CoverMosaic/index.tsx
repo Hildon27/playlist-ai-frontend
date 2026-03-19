@@ -1,12 +1,15 @@
 type CoverMosaicProps = {
   coverImages: string[];
   /** Use 'card' for Home playlist cards (cover-wrapper, cover-tile), 'detail' for PlaylistDetail (mosaic-img) */
-  variant?: 'card' | 'detail';
+  variant?: "card" | "detail";
 };
 
-export function CoverMosaic({ coverImages, variant = 'card' }: CoverMosaicProps) {
+export function CoverMosaic({
+  coverImages,
+  variant = "card",
+}: CoverMosaicProps) {
   if (!coverImages || coverImages.length === 0) {
-    if (variant === 'card') {
+    if (variant === "card") {
       return (
         <div className="cover-wrapper">
           <div className="cover-mosaic placeholder-mosaic">
@@ -23,20 +26,20 @@ export function CoverMosaic({ coverImages, variant = 'card' }: CoverMosaicProps)
     slots.push(coverImages[slots.length % coverImages.length]);
   }
 
-  const tiles = slots.slice(0, 4).map((cover, i) => (
-    variant === 'card' ? (
-      <img key={i} src={cover} alt="" className="cover-tile" />
-    ) : (
-      <img key={i} src={cover} alt="" className="mosaic-img" />
-    )
-  ));
+  const tiles = slots
+    .slice(0, 4)
+    .map((cover, i) =>
+      variant === "card" ? (
+        <img key={i} src={cover} alt="" className="cover-tile" />
+      ) : (
+        <img key={i} src={cover} alt="" className="mosaic-img" />
+      ),
+    );
 
-  if (variant === 'card') {
+  if (variant === "card") {
     return (
       <div className="cover-wrapper">
-        <div className="cover-mosaic">
-          {tiles}
-        </div>
+        <div className="cover-mosaic">{tiles}</div>
       </div>
     );
   }

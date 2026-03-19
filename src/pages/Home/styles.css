@@ -68,6 +68,9 @@
 
 .home-main {
   padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .section-header {
@@ -323,13 +326,23 @@
   animation: shimmer 1.5s infinite;
 }
 
-.skeleton-line.wide { width: 80%; }
-.skeleton-line.medium { width: 55%; }
-.skeleton-line.short { width: 35%; }
+.skeleton-line.wide {
+  width: 80%;
+}
+.skeleton-line.medium {
+  width: 55%;
+}
+.skeleton-line.short {
+  width: 35%;
+}
 
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* Mensagem vazia */

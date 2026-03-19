@@ -1,7 +1,7 @@
-import { IoGlobe, IoLockClosed } from 'react-icons/io5';
-import { CoverMosaic } from '../CoverMosaic';
-import { formatDate } from '../../utils/date';
-import type { Playlist } from '../../types/playlist';
+import { IoGlobe, IoLockClosed } from "react-icons/io5";
+import { CoverMosaic } from "../CoverMosaic";
+import { formatDate } from "../../utils/date";
+import type { Playlist } from "../../types/playlist";
 
 type PlaylistCardProps = {
   playlist: Playlist;
@@ -17,7 +17,11 @@ export function PlaylistCard({ playlist, onClick }: PlaylistCardProps) {
       <div className="card-header">
         <h3>{playlist.name}</h3>
         <span className={`privacity-badge ${playlist.privacity.toLowerCase()}`}>
-          {playlist.privacity.toUpperCase() === 'PUBLIC' ? <IoGlobe size={16} /> : <IoLockClosed size={16} />}
+          {playlist.privacity.toUpperCase() === "PUBLIC" ? (
+            <IoGlobe size={16} />
+          ) : (
+            <IoLockClosed size={16} />
+          )}
         </span>
       </div>
       {playlist.aiMessage && (

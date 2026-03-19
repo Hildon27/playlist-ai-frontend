@@ -1,34 +1,34 @@
-import { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import type { Privacity } from '../../types/auth';
-import { AuthLayout, FormGroup } from '../../components';
-import '../../styles/auth.css';
+import { useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import type { Privacity } from "../../types/auth";
+import { AuthLayout, FormGroup } from "../../components";
+import "../../styles/auth.css";
 
 export function Register() {
   const navigate = useNavigate();
   const { register } = useAuth();
 
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [privacity, setPrivacity] = useState<Privacity>('public');
-  const [error, setError] = useState('');
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [privacity, setPrivacity] = useState<Privacity>("public");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (password !== confirmPassword) {
-      setError('As senhas não coincidem.');
+      setError("As senhas não coincidem.");
       return;
     }
 
     if (password.length < 6) {
-      setError('A senha deve ter pelo menos 6 caracteres.');
+      setError("A senha deve ter pelo menos 6 caracteres.");
       return;
     }
 
@@ -42,16 +42,16 @@ export function Register() {
         password,
         privacity,
       });
-      navigate('/login', {
+      navigate("/login", {
         state: {
-          message: 'Conta criada com sucesso! Faça login para continuar.',
+          message: "Conta criada com sucesso! Faça login para continuar.",
         },
       });
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('Erro ao criar conta. Tente novamente.');
+        setError("Erro ao criar conta. Tente novamente.");
       }
     } finally {
       setIsLoading(false);
@@ -145,7 +145,7 @@ export function Register() {
         </FormGroup>
 
         <button type="submit" className="auth-button" disabled={isLoading}>
-          {isLoading ? 'Criando conta...' : 'Criar Conta'}
+          {isLoading ? "Criando conta..." : "Criar Conta"}
         </button>
       </form>
     </AuthLayout>

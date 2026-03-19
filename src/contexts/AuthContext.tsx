@@ -1,6 +1,18 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import type { AuthContextType, LoginRequest, RegisterRequest, UpdateUserRequest, User } from '../types/auth';
-import { authService, userService } from '../services/api';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
+import type {
+  AuthContextType,
+  LoginRequest,
+  RegisterRequest,
+  UpdateUserRequest,
+  User,
+} from "../types/auth";
+import { authService, userService } from "../services/api";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -10,7 +22,9 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem('access_token'));
+  const [token, setToken] = useState<string | null>(() =>
+    localStorage.getItem("access_token"),
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   const isAuthenticated = !!token && !!user;
@@ -22,7 +36,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           const userData = await authService.getMe();
           setUser(userData);
         } catch {
-          localStorage.removeItem('access_token');
+          localStorage.removeItem("access_token");
           setToken(null);
           setUser(null);
         }
@@ -35,9 +49,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const login = async (credentials: LoginRequest) => {
     const response = await authService.login(credentials);
-    localStorage.setItem('access_token', response.token);
+    localStorage.setItem("access_token", response.token);
     setToken(response.token);
-    
+
     const userData = await authService.getMe();
     setUser(userData);
   };
@@ -47,7 +61,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   const logout = () => {
-    localStorage.removeItem('access_token');
+    localStorage.removeItem("access_token");
     setToken(null);
     setUser(null);
   };
@@ -78,7 +92,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

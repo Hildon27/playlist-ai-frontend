@@ -1,19 +1,25 @@
-import { useState, useEffect, useCallback } from 'react';
-import { commentService } from '../../services/api';
-import type { PlaylistCommentWithUser } from '../../types/comment';
-import { CommentItem } from '../CommentItem';
+import { useState, useEffect, useCallback } from "react";
+import { commentService } from "../../services/api";
+import type { PlaylistCommentWithUser } from "../../types/comment";
+import { CommentItem } from "../CommentItem";
 
 type CommentsSectionProps = {
   playlistId: string;
   currentUserId: string | undefined;
 };
 
-export function CommentsSection({ playlistId, currentUserId }: CommentsSectionProps) {
+export function CommentsSection({
+  playlistId,
+  currentUserId,
+}: CommentsSectionProps) {
   const [comments, setComments] = useState<PlaylistCommentWithUser[]>([]);
-  const [meta, setMeta] = useState<{ total: number; totalPages: number }>({ total: 0, totalPages: 1 });
+  const [meta, setMeta] = useState<{ total: number; totalPages: number }>({
+    total: 0,
+    totalPages: 1,
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [newContent, setNewContent] = useState('');
+  const [newContent, setNewContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const loadComments = useCallback(async () => {
@@ -23,14 +29,14 @@ export function CommentsSection({ playlistId, currentUserId }: CommentsSectionPr
       const result = await commentService.getByPlaylistId(playlistId, {
         page: 1,
         size: 50,
-        sortBy: 'createdAt',
-        sortOrder: 'desc',
+        sortBy: "createdAt",
+        sortOrder: "desc",
       });
       setComments(result.data);
       setMeta(result.meta);
     } catch (e) {
       console.error(e);
-      setError('Não foi possível carregar os comentários.');
+      setError("Não foi possível carregar os comentários.");
     } finally {
       setLoading(false);
     }
@@ -48,11 +54,11 @@ export function CommentsSection({ playlistId, currentUserId }: CommentsSectionPr
     setError(null);
     try {
       await commentService.create(playlistId, { content: trimmed });
-      setNewContent('');
+      setNewContent("");
       await loadComments();
     } catch (e) {
       console.error(e);
-      setError('Não foi possível publicar o comentário.');
+      setError("Não foi possível publicar o comentário.");
     } finally {
       setIsSubmitting(false);
     }
@@ -70,7 +76,9 @@ export function CommentsSection({ playlistId, currentUserId }: CommentsSectionPr
 
   return (
     <section className="comments-section">
-      <h2 className="comments-section-title">Comentários {meta.total > 0 && `(${meta.total})`}</h2>
+      <h2 className="comments-section-title">
+        Comentários {meta.total > 0 && `(${meta.total})`}
+      </h2>
 
       {currentUserId && (
         <form onSubmit={handleCreate} className="comment-form">
@@ -89,7 +97,7 @@ export function CommentsSection({ playlistId, currentUserId }: CommentsSectionPr
             className="comment-form-submit"
             disabled={isSubmitting || !newContent.trim()}
           >
-            {isSubmitting ? 'Publicando...' : 'Comentar'}
+            {isSubmitting ? "Publicando..." : "Comentar"}
           </button>
         </form>
       )}
@@ -97,7 +105,9 @@ export function CommentsSection({ playlistId, currentUserId }: CommentsSectionPr
       {loading ? (
         <p className="comments-loading">Carregando comentários...</p>
       ) : comments.length === 0 ? (
-        <p className="comments-empty">Nenhum comentário ainda. Seja o primeiro!</p>
+        <p className="comments-empty">
+          Nenhum comentário ainda. Seja o primeiro!
+        </p>
       ) : (
         <div className="comments-list">
           {comments.map((comment) => (

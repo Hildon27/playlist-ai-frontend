@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { spotifyService, aiService } from '../../services/api';
-import type { SpotifyTrack, GeneratedTrack } from '../../types/spotify';
-import { BackLink } from '../../components';
-import './styles.css';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { spotifyService, aiService } from "../../services/api";
+import type { SpotifyTrack, GeneratedTrack } from "../../types/spotify";
+import { BackLink } from "../../components";
+import "./styles.css";
 
 const MAX_SELECTED_TRACKS = 4;
 const MIN_SELECTED_TRACKS = 4;
@@ -11,16 +11,20 @@ const MIN_SELECTED_TRACKS = 4;
 export function PlaylistGenerator() {
   const navigate = useNavigate();
 
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SpotifyTrack[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [selectedTracks, setSelectedTracks] = useState<SpotifyTrack[]>([]);
-  const [playlistName, setPlaylistName] = useState('');
-  const [playlistPrivacity, setPlaylistPrivacity] = useState<'public' | 'private'>('private');
+  const [playlistName, setPlaylistName] = useState("");
+  const [playlistPrivacity, setPlaylistPrivacity] = useState<
+    "public" | "private"
+  >("private");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedPlaylist, setGeneratedPlaylist] = useState<GeneratedTrack[] | null>(null);
-  const [error, setError] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [generatedPlaylist, setGeneratedPlaylist] = useState<
+    GeneratedTrack[] | null
+  >(null);
+  const [error, setError] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -39,7 +43,7 @@ export function PlaylistGenerator() {
 
     async function search() {
       setIsSearching(true);
-      setError('');
+      setError("");
 
       try {
         const tracks = await spotifyService.searchTracks(debouncedQuery, 10);
@@ -48,7 +52,7 @@ export function PlaylistGenerator() {
         }
       } catch {
         if (!cancelled) {
-          setError('Erro ao buscar músicas. Tente novamente.');
+          setError("Erro ao buscar músicas. Tente novamente.");
         }
       } finally {
         if (!cancelled) {
@@ -78,16 +82,18 @@ export function PlaylistGenerator() {
 
   const handleGeneratePlaylist = async () => {
     if (!playlistName.trim()) {
-      setError('Digite um nome para a playlist.');
+      setError("Digite um nome para a playlist.");
       return;
     }
     if (selectedTracks.length < MIN_SELECTED_TRACKS) {
-      setError(`Selecione pelo menos ${MIN_SELECTED_TRACKS} músicas para gerar a playlist.`);
+      setError(
+        `Selecione pelo menos ${MIN_SELECTED_TRACKS} músicas para gerar a playlist.`,
+      );
       return;
     }
 
     setIsGenerating(true);
-    setError('');
+    setError("");
 
     try {
       const seedTracks = selectedTracks.map((track) => ({
@@ -105,7 +111,7 @@ export function PlaylistGenerator() {
 
       setGeneratedPlaylist(response.tracks);
     } catch {
-      setError('Erro ao gerar playlist. Tente novamente.');
+      setError("Erro ao gerar playlist. Tente novamente.");
     } finally {
       setIsGenerating(false);
     }
@@ -115,9 +121,9 @@ export function PlaylistGenerator() {
     setSelectedTracks([]);
     setGeneratedPlaylist(null);
     setSearchResults([]);
-    setSearchQuery('');
-    setPlaylistName('');
-    setPlaylistPrivacity('private');
+    setSearchQuery("");
+    setPlaylistName("");
+    setPlaylistPrivacity("private");
   };
 
   const isTrackSelected = (trackId: string) => {
@@ -127,7 +133,7 @@ export function PlaylistGenerator() {
   return (
     <div className="generator-container">
       <header className="generator-header">
-        <BackLink onClick={() => navigate('/')} className="back-button">
+        <BackLink onClick={() => navigate("/")} className="back-button">
           ← Voltar
         </BackLink>
         <h1>Criar Playlist com IA</h1>
@@ -137,11 +143,15 @@ export function PlaylistGenerator() {
         {!generatedPlaylist ? (
           <>
             <section className="selected-section">
-              <h2>Músicas Selecionadas ({selectedTracks.length}/{MAX_SELECTED_TRACKS})</h2>
+              <h2>
+                Músicas Selecionadas ({selectedTracks.length}/
+                {MAX_SELECTED_TRACKS})
+              </h2>
 
               {selectedTracks.length === 0 ? (
                 <p className="empty-message">
-                  Busque e selecione {MIN_SELECTED_TRACKS} músicas para gerar sua playlist personalizada
+                  Busque e selecione {MIN_SELECTED_TRACKS} músicas para gerar
+                  sua playlist personalizada
                 </p>
               ) : (
                 <div className="selected-tracks">
@@ -149,7 +159,11 @@ export function PlaylistGenerator() {
                     <div key={track.id} className="selected-track">
                       <span className="track-number">{index + 1}</span>
                       {track.albumCover && (
-                        <img src={track.albumCover} alt={track.album} className="track-cover-small" />
+                        <img
+                          src={track.albumCover}
+                          alt={track.album}
+                          className="track-cover-small"
+                        />
                       )}
                       <div className="track-info">
                         <span className="track-name">{track.name}</span>
@@ -186,7 +200,11 @@ export function PlaylistGenerator() {
                     <select
                       id="playlistPrivacity"
                       value={playlistPrivacity}
-                      onChange={(e) => setPlaylistPrivacity(e.target.value as 'public' | 'private')}
+                      onChange={(e) =>
+                        setPlaylistPrivacity(
+                          e.target.value as "public" | "private",
+                        )
+                      }
                     >
                       <option value="private">Privada</option>
                       <option value="public">Pública</option>
@@ -198,7 +216,9 @@ export function PlaylistGenerator() {
                     className="generate-button"
                     disabled={isGenerating || !playlistName.trim()}
                   >
-                    {isGenerating ? 'Gerando playlist...' : '✨ Gerar Playlist com IA'}
+                    {isGenerating
+                      ? "Gerando playlist..."
+                      : "✨ Gerar Playlist com IA"}
                   </button>
                 </div>
               )}
@@ -237,11 +257,15 @@ export function PlaylistGenerator() {
                     {searchResults.map((track) => (
                       <div
                         key={track.id}
-                        className={`search-result ${isTrackSelected(track.id) ? 'selected' : ''}`}
+                        className={`search-result ${isTrackSelected(track.id) ? "selected" : ""}`}
                         onClick={() => handleSelectTrack(track)}
                       >
                         {track.albumCover && (
-                          <img src={track.albumCover} alt={track.album} className="track-cover" />
+                          <img
+                            src={track.albumCover}
+                            alt={track.album}
+                            className="track-cover"
+                          />
                         )}
                         <div className="track-details">
                           <span className="track-name">{track.name}</span>
@@ -250,7 +274,9 @@ export function PlaylistGenerator() {
                         </div>
                         <div className="track-action">
                           {isTrackSelected(track.id) ? (
-                            <span className="selected-badge">✓ Selecionada</span>
+                            <span className="selected-badge">
+                              ✓ Selecionada
+                            </span>
                           ) : selectedTracks.length >= MAX_SELECTED_TRACKS ? (
                             <span className="limit-badge">Limite atingido</span>
                           ) : (
@@ -268,7 +294,10 @@ export function PlaylistGenerator() {
           <section className="generated-section">
             <div className="generated-header">
               <h2>Sua Playlist Gerada!</h2>
-              <p>Baseada nas músicas que você selecionou, aqui estão as recomendações:</p>
+              <p>
+                Baseada nas músicas que você selecionou, aqui estão as
+                recomendações:
+              </p>
             </div>
 
             <div className="seeds-summary">
@@ -287,7 +316,11 @@ export function PlaylistGenerator() {
                 <div key={track.id} className="generated-track">
                   <span className="track-position">{index + 1}</span>
                   {track.albumCover && (
-                    <img src={track.albumCover} alt={track.album} className="track-cover" />
+                    <img
+                      src={track.albumCover}
+                      alt={track.album}
+                      className="track-cover"
+                    />
                   )}
                   <div className="track-details">
                     <span className="track-name">{track.name}</span>

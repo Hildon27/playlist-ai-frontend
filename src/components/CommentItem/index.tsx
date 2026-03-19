@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { formatDateLong } from '../../utils/date';
-import type { PlaylistCommentWithUser } from '../../types/comment';
+import { useState } from "react";
+import { formatDateLong } from "../../utils/date";
+import type { PlaylistCommentWithUser } from "../../types/comment";
 
 type CommentItemProps = {
   comment: PlaylistCommentWithUser;
@@ -9,12 +9,18 @@ type CommentItemProps = {
   onDelete: (commentId: string) => Promise<void>;
 };
 
-export function CommentItem({ comment, currentUserId, onUpdate, onDelete }: CommentItemProps) {
+export function CommentItem({
+  comment,
+  currentUserId,
+  onUpdate,
+  onDelete,
+}: CommentItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isOwner = currentUserId !== undefined && comment.userId === currentUserId;
+  const isOwner =
+    currentUserId !== undefined && comment.userId === currentUserId;
 
   async function handleSave() {
     const trimmed = editContent.trim();
@@ -38,7 +44,7 @@ export function CommentItem({ comment, currentUserId, onUpdate, onDelete }: Comm
   }
 
   async function handleDeleteClick() {
-    if (!confirm('Excluir este comentário?')) return;
+    if (!confirm("Excluir este comentário?")) return;
     try {
       await onDelete(comment.id);
     } catch (e) {
@@ -46,13 +52,16 @@ export function CommentItem({ comment, currentUserId, onUpdate, onDelete }: Comm
     }
   }
 
-  const authorName = `${comment.user.firstName} ${comment.user.lastName}`.trim() || 'Usuário';
+  const authorName =
+    `${comment.user.firstName} ${comment.user.lastName}`.trim() || "Usuário";
 
   return (
     <div className="comment-item">
       <div className="comment-header">
         <span className="comment-author">{authorName}</span>
-        <span className="comment-date">{formatDateLong(comment.createdAt)}</span>
+        <span className="comment-date">
+          {formatDateLong(comment.createdAt)}
+        </span>
         {isOwner && !isEditing && (
           <div className="comment-actions">
             <button
@@ -99,7 +108,7 @@ export function CommentItem({ comment, currentUserId, onUpdate, onDelete }: Comm
               onClick={handleSave}
               disabled={isSubmitting || !editContent.trim()}
             >
-              {isSubmitting ? 'Salvando...' : 'Salvar'}
+              {isSubmitting ? "Salvando..." : "Salvar"}
             </button>
           </div>
         </div>
