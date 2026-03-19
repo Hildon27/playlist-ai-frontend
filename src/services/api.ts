@@ -12,6 +12,12 @@ import type {
 } from "../types/spotify";
 import type { PlaylistsResponse, PlaylistWithMusics } from "../types/playlist";
 import type { FollowRequestProcessingAction } from "../types/follow";
+import type {
+  PlaylistCommentWithUser,
+  CreateCommentRequest,
+  UpdateCommentRequest,
+  CommentsPaginatedResponse,
+} from "../types/comment";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -296,5 +302,54 @@ export const playlistService = {
       data: resData.data || [],
       meta: resData.meta || { page, size, total: 0, totalPages: 1 },
     };
+  },
+};
+
+export type CommentListParams = {
+  page?: number;
+  size?: number;
+  sortBy?: "createdAt" | "updatedAt" | "content";
+  sortOrder?: "asc" | "desc";
+};
+
+export const commentService = {
+  async getByPlaylistId(
+    playlistId: string,
+    params: CommentListParams = {},
+  ): Promise<CommentsPaginatedResponse> {
+    const {
+      page = 1,
+      size = 10,
+      sortBy = "createdAt",
+      sortOrder = "asc",
+    } = params;
+    const response = await api.get(`/api/comments/playlist/${playlistId}`, {
+      params: { page, size, sortBy, sortOrder },
+    });
+    const res = response.data;
+    return {
+      data: res.data ?? [],
+      meta: res.meta ?? { page, size, total: 0, totalPages: 1 },
+    };
+  },
+
+  async create(
+    playlistId: string,
+    data: CreateCommentRequest,
+  ): Promise<PlaylistCommentWithUser> {
+    const response = await api.post(`/api/comments/${playlistId}`, data);
+    return response.data?.data ?? response.data;
+  },
+
+  async update(
+    commentId: string,
+    data: UpdateCommentRequest,
+  ): Promise<PlaylistCommentWithUser> {
+    const response = await api.put(`/api/comments/${commentId}`, data);
+    return response.data?.data ?? response.data;
+  },
+
+  async delete(commentId: string): Promise<void> {
+    await api.delete(`/api/comments/${commentId}`);
   },
 };

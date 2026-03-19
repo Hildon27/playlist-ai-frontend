@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import type { Privacity } from "../../types/auth";
+import { AuthLayout, FormGroup } from "../../components";
 import "../../styles/auth.css";
 
 export function Register() {
@@ -58,106 +59,95 @@ export function Register() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <div className="auth-header">
-          <h1>Playlist AI</h1>
-          <p>Crie sua conta</p>
-        </div>
+    <AuthLayout
+      title="Playlist AI"
+      subtitle="Crie sua conta"
+      footer={
+        <p>
+          Já tem uma conta? <Link to="/login">Faça login</Link>
+        </p>
+      }
+    >
+      <form onSubmit={handleSubmit} className="auth-form">
+        {error && <div className="auth-error">{error}</div>}
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          {error && <div className="auth-error">{error}</div>}
+        <FormGroup label="Nome" htmlFor="firstName">
+          <input
+            id="firstName"
+            type="text"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder="João"
+            required
+            disabled={isLoading}
+          />
+        </FormGroup>
 
-          <div className="form-group">
-            <label htmlFor="firstName">Nome</label>
-            <input
-              id="firstName"
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              placeholder="João"
-              required
-              disabled={isLoading}
-            />
-          </div>
+        <FormGroup label="Sobrenome" htmlFor="lastName">
+          <input
+            id="lastName"
+            type="text"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            placeholder="Silva"
+            required
+            disabled={isLoading}
+          />
+        </FormGroup>
 
-          <div className="form-group">
-            <label htmlFor="lastName">Sobrenome</label>
-            <input
-              id="lastName"
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              placeholder="Silva"
-              required
-              disabled={isLoading}
-            />
-          </div>
+        <FormGroup label="Email" htmlFor="email">
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="seu@email.com"
+            required
+            disabled={isLoading}
+          />
+        </FormGroup>
 
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="seu@email.com"
-              required
-              disabled={isLoading}
-            />
-          </div>
+        <FormGroup label="Senha" htmlFor="password">
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Mínimo 6 caracteres"
+            required
+            minLength={6}
+            disabled={isLoading}
+          />
+        </FormGroup>
 
-          <div className="form-group">
-            <label htmlFor="password">Senha</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Mínimo 6 caracteres"
-              required
-              minLength={6}
-              disabled={isLoading}
-            />
-          </div>
+        <FormGroup label="Confirmar Senha" htmlFor="confirmPassword">
+          <input
+            id="confirmPassword"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Confirme sua senha"
+            required
+            disabled={isLoading}
+          />
+        </FormGroup>
 
-          <div className="form-group">
-            <label htmlFor="confirmPassword">Confirmar Senha</label>
-            <input
-              id="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirme sua senha"
-              required
-              disabled={isLoading}
-            />
-          </div>
+        <FormGroup label="Privacidade do Perfil" htmlFor="privacity">
+          <select
+            id="privacity"
+            value={privacity}
+            onChange={(e) => setPrivacity(e.target.value as Privacity)}
+            disabled={isLoading}
+          >
+            <option value="public">Público</option>
+            <option value="private">Privado</option>
+          </select>
+        </FormGroup>
 
-          <div className="form-group">
-            <label htmlFor="privacity">Privacidade do Perfil</label>
-            <select
-              id="privacity"
-              value={privacity}
-              onChange={(e) => setPrivacity(e.target.value as Privacity)}
-              disabled={isLoading}
-            >
-              <option value="public">Público</option>
-              <option value="private">Privado</option>
-            </select>
-          </div>
-
-          <button type="submit" className="auth-button" disabled={isLoading}>
-            {isLoading ? "Criando conta..." : "Criar Conta"}
-          </button>
-        </form>
-
-        <div className="auth-footer">
-          <p>
-            Já tem uma conta? <Link to="/login">Faça login</Link>
-          </p>
-        </div>
-      </div>
-    </div>
+        <button type="submit" className="auth-button" disabled={isLoading}>
+          {isLoading ? "Criando conta..." : "Criar Conta"}
+        </button>
+      </form>
+    </AuthLayout>
   );
 }

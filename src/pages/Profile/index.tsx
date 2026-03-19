@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import type { UpdateUserRequest } from "../../types/auth";
+import { FormGroup, BackLink } from "../../components";
+import { formatDateLong } from "../../utils/date";
+import "./styles.css";
 import "./styles.css";
 import { FollowSocialSection } from "../../components/Follow";
 
@@ -72,16 +74,10 @@ export function Profile() {
     setSuccess(null);
   };
 
-  const getInitials = (firstName: string, lastName: string) => {
-    return `${firstName[0]}${lastName[0]}`.toUpperCase();
+  const getInitials = () => {
+    if (!user) return "?";
+    return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
   };
-
-  const formatDate = (date: string) =>
-    new Date(date).toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
 
   if (!user)
     return <p style={{ color: "#fff", textAlign: "center" }}>Carregando...</p>;
@@ -91,43 +87,38 @@ export function Profile() {
       {/* HEADER */}
       <div className="profile-header">
         <h1>Meu Perfil</h1>
-        <Link to="/" className="back-link">
-          ← Voltar
-        </Link>
+        <BackLink to="/" />
       </div>
 
       {/* FORM */}
       <div className="profile-card">
-        <div className="profile-avatar">
-          {getInitials(user.firstName, user.lastName)}
-        </div>
-        <form onSubmit={handleSubmit} className="profile-form">
+        <div className="profile-avatar">{getInitials()}</div>
+
+        <form className="profile-form" onSubmit={handleSubmit}>
           {error && <div className="error-message">{error}</div>}
           {success && <div className="success-message">{success}</div>}
 
           <div className="form-row">
-            <div className="form-group">
-              <label>Nome</label>
+            <FormGroup label="Nome" htmlFor="firstName">
               <input
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
                 disabled={!isEditing || loading}
               />
-            </div>
-            <div className="form-group">
-              <label>Sobrenome</label>
+            </FormGroup>
+
+            <FormGroup label="Sobrenome" htmlFor="lastName">
               <input
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
                 disabled={!isEditing || loading}
               />
-            </div>
+            </FormGroup>
           </div>
 
-          <div className="form-group">
-            <label>Email</label>
+          <FormGroup label="Email" htmlFor="email">
             <input
               name="email"
               type="email"
@@ -135,10 +126,9 @@ export function Profile() {
               onChange={handleChange}
               disabled={!isEditing || loading}
             />
-          </div>
+          </FormGroup>
 
-          <div className="form-group">
-            <label>Privacidade</label>
+          <FormGroup label="Privacidade do Perfil" htmlFor="privacity">
             <select
               name="privacity"
               value={formData.privacity}
@@ -148,11 +138,17 @@ export function Profile() {
               <option value="public">Público</option>
               <option value="private">Privado</option>
             </select>
-          </div>
+          </FormGroup>
 
           <div className="profile-info">
-            <span>Membro desde: {formatDate(user.createdAt)}</span>
-            <span>Última atualização: {formatDate(user.updatedAt)}</span>
+            <div className="profile-info-item">
+              <span>Membro desde</span>
+              <span>{formatDateLong(user.createdAt)}</span>
+            </div>
+            <div className="profile-info-item">
+              <span>Última atualização</span>
+              <span>{formatDateLong(user.updatedAt)}</span>
+            </div>
           </div>
 
           <div className="profile-actions">

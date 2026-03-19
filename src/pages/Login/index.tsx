@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { AuthLayout, FormGroup } from "../../components";
 import "../../styles/auth.css";
 
 export function Login() {
@@ -36,53 +37,46 @@ export function Login() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <div className="auth-header">
-          <h1>Playlist AI</h1>
-          <p>Entre na sua conta</p>
-        </div>
+    <AuthLayout
+      title="Playlist AI"
+      subtitle="Entre na sua conta"
+      footer={
+        <p>
+          Não tem uma conta? <Link to="/register">Cadastre-se</Link>
+        </p>
+      }
+    >
+      <form onSubmit={handleSubmit} className="auth-form">
+        {error && <div className="auth-error">{error}</div>}
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          {error && <div className="auth-error">{error}</div>}
+        <FormGroup label="Email" htmlFor="email">
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="seu@email.com"
+            required
+            disabled={isLoading}
+          />
+        </FormGroup>
 
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="seu@email.com"
-              required
-              disabled={isLoading}
-            />
-          </div>
+        <FormGroup label="Senha" htmlFor="password">
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="********"
+            required
+            disabled={isLoading}
+          />
+        </FormGroup>
 
-          <div className="form-group">
-            <label htmlFor="password">Senha</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="********"
-              required
-              disabled={isLoading}
-            />
-          </div>
-
-          <button type="submit" className="auth-button" disabled={isLoading}>
-            {isLoading ? "Entrando..." : "Entrar"}
-          </button>
-        </form>
-
-        <div className="auth-footer">
-          <p>
-            Não tem uma conta? <Link to="/register">Cadastre-se</Link>
-          </p>
-        </div>
-      </div>
-    </div>
+        <button type="submit" className="auth-button" disabled={isLoading}>
+          {isLoading ? "Entrando..." : "Entrar"}
+        </button>
+      </form>
+    </AuthLayout>
   );
 }

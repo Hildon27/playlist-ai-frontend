@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { spotifyService, aiService } from "../../services/api";
 import type { SpotifyTrack, GeneratedTrack } from "../../types/spotify";
+import { BackLink } from "../../components";
 import "./styles.css";
 
 const MAX_SELECTED_TRACKS = 4;
@@ -10,31 +11,21 @@ const MIN_SELECTED_TRACKS = 4;
 export function PlaylistGenerator() {
   const navigate = useNavigate();
 
-  // Search state
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SpotifyTrack[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-
-  // Selection state
   const [selectedTracks, setSelectedTracks] = useState<SpotifyTrack[]>([]);
-
-  // Playlist info state
   const [playlistName, setPlaylistName] = useState("");
   const [playlistPrivacity, setPlaylistPrivacity] = useState<
     "public" | "private"
   >("private");
-
-  // Generation state
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedPlaylist, setGeneratedPlaylist] = useState<
     GeneratedTrack[] | null
   >(null);
-
-  // Error state
   const [error, setError] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
 
-  // Debounce: atualiza debouncedQuery 400ms após o usuário parar de digitar
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(searchQuery);
@@ -42,7 +33,6 @@ export function PlaylistGenerator() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Busca quando debouncedQuery muda
   useEffect(() => {
     if (!debouncedQuery.trim()) {
       setSearchResults([]);
@@ -80,10 +70,8 @@ export function PlaylistGenerator() {
 
   const handleSelectTrack = (track: SpotifyTrack) => {
     if (selectedTracks.find((t) => t.id === track.id)) {
-      // Remove if already selected
       setSelectedTracks((prev) => prev.filter((t) => t.id !== track.id));
     } else if (selectedTracks.length < MAX_SELECTED_TRACKS) {
-      // Add if under limit
       setSelectedTracks((prev) => [...prev, track]);
     }
   };
@@ -145,16 +133,15 @@ export function PlaylistGenerator() {
   return (
     <div className="generator-container">
       <header className="generator-header">
-        <button onClick={() => navigate("/")} className="back-button">
+        <BackLink onClick={() => navigate("/")} className="back-button">
           ← Voltar
-        </button>
+        </BackLink>
         <h1>Criar Playlist com IA</h1>
       </header>
 
       <main className="generator-main">
         {!generatedPlaylist ? (
           <>
-            {/* Selected Tracks Section */}
             <section className="selected-section">
               <h2>
                 Músicas Selecionadas ({selectedTracks.length}/
@@ -237,7 +224,6 @@ export function PlaylistGenerator() {
               )}
             </section>
 
-            {/* Search Section */}
             <section className="search-section">
               <h2>Buscar Músicas</h2>
 
@@ -305,7 +291,6 @@ export function PlaylistGenerator() {
             </section>
           </>
         ) : (
-          /* Generated Playlist Section */
           <section className="generated-section">
             <div className="generated-header">
               <h2>Sua Playlist Gerada!</h2>
