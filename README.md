@@ -1,73 +1,56 @@
-# React + TypeScript + Vite
+# 🎧 Playlist AI – Geração de Playlist Inteligente
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+O **Playlist AI** é uma plataforma que une Inteligência Artificial e música para oferecer uma experiência personalizada de descoberta e interação social. O frontend foi projetado para ser intuitivo, permitindo que usuários gerem playlists automáticas a partir de referências musicais e interajam com uma comunidade através de seguidores e comentários.
 
-Currently, two official plugins are available:
+## Sobre o Projeto
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+O objetivo principal é facilitar a curadoria musical. Através da integração com a API do Spotify para busca de metadados e um motor de IA para sugestões, o usuário pode criar coleções musicais complexas em poucos segundos.
 
-## React Compiler
+### Funcionalidades Principais
+* **Geração Inteligente:** Criação de playlists baseadas em 4 músicas "semente".
+* **Ecossistema Social:** Sistema completo de seguidores e solicitações de amizade.
+* **Interatividade:** Comentários dinâmicos em cada playlist gerada.
+* **Visual Dinâmico:** Gerador de mosaicos de capas de álbuns automático.
+* **Gestão de Conta:** Controle de perfil e preferências de privacidade.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tecnologias Utilizadas
 
-## Expanding the ESLint configuration
+* [React.js](https://react.dev/): Biblioteca base para construção da interface.
+* [TypeScript](https://www.typescriptlang.org/): Linguagem para tipagem estática e segurança do código.
+* [Tailwind CSS](https://tailwindcss.com/): Framework para estilização via classes utilitárias.
+* [Shadcn UI](https://ui.shadcn.com/): Conjunto de componentes de interface reutilizáveis e acessíveis.
+* [Lucide React](https://lucide.dev/): Biblioteca de ícones vetoriais.
+* [React Router DOM](https://reactrouter.com/): Gerenciamento de rotas e navegação.
+* [Context API](https://react.dev/learn/passing-data-deeply-with-context): Gerenciamento de estado global.
+* [Axios](https://axios-http.com/): Cliente HTTP para integração com o backend.
+* [Vite](https://vitejs.dev/): Ferramenta de build e servidor de desenvolvimento.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Estrutura de Pastas
 
-```js
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
+O projeto utiliza uma arquitetura modularizada dentro de `src/` para garantir escalabilidade:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+* **src/components/**: Componentes reutilizáveis (Ex: AuthLayout, TrackItem, PlaylistCard).
+* **src/pages/**: Telas principais da aplicação e seus subcomponentes específicos.
+* **src/contexts/**: Gerenciamento de estado global (Autenticação e dados de usuário).
+* **src/services/**: Camada de comunicação com APIs externas (Auth, Spotify, AI).
+* **src/types/**: Tipagens TypeScript compartilhadas entre os módulos.
+* **src/utils/**: Funções utilitárias e helpers genéricos.
+* **src/styles/**: Definições de estilos globais e temas.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+## Componentização em Destaque
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+A aplicação foca na reutilização de código através de componentes modulares:
+* **CoverMosaic**: Monta dinamicamente a capa da playlist (mosaico de até 4 imagens).
+* **TrackItem**: Exibe informações da faixa com suporte a preview de áudio.
+* **PlaylistCard**: Card com suporte a "Skeleton Loading" para melhor experiência de carregamento.
+* **AuthLayout**: Padronização visual para fluxos de Login e Cadastro.
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
+## Roteamento
 
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+* **Rotas Públicas:** `/login`, `/register` (Redirecionam para a home se logado).
+* **Rotas Protegidas:** `/`, `/create-playlist`, `/playlists/:id`, `/profile` (Exigem token válido).
+
+## Desenvolvedores
+
+* [Hildon Neto](https://github.com/Hildon27)
+* [Marcos Antonio de Albuquerque Santos](https://github.com/marcosantonio15243)
